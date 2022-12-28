@@ -1,0 +1,66 @@
+﻿<h1 class="page-header"><i class="fa fa-check"></i> Approve <span class="font-14"><strong class="text-blue" v-text="connect.approved"></strong> persons</span> </h1>
+<!-- end page-header -->
+<!-- begin panel -->
+<div class="panel panel-inverse">
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+        </div>
+        <div class="panel-title font-14 font-bold">Enter Registration Code</div>
+    </div>
+    <div class="panel-body">
+        <div class="input-group">
+            <input type="text" class="form-control" v-on:keypress="onApproveEnter(event)" v-model="approve.registerCode" maxlength="25">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-yellow" v-on:click="searchForApproveToServer()">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- begin result card -->
+    <fieldset v-bind:disabled="disableds.approve">
+        <div class="card text-left" v-if="profiles && profiles.length">
+            <div class="card-header"></div>
+            <div class="card-block" v-for="(p,i) in profiles" :key="i">
+                <h4 class="card-title">
+                    <span v-text="p.titlename"></span> <span v-text="p.fullname"></span>
+                    <span v-show="p.registrationCode" class="badge badge-primary"><span v-text="p.registrationCode"></span></span>
+                </h4>
+                <p class="card-text font-14"><strong class="text-blue">Faculty</strong> <span v-text="p.section"></span></p>
+                <p class="card-text font-14"><strong class="text-blue">Status</strong> <span v-text="p.statusMU"></span> <em class="text-orange" v-text="p.studentDegree"></em></p>
+                <p class="card-text font-14"><strong class="text-blue">Country</strong> <span v-text="p.countryNameEN"></span></p>
+                <p class="card-text font-14">
+                    <strong class="text-blue">Ticket </strong> <span v-text="p.event1"></span>
+                    <em class="text-grey" v-text="p.createdate"></em><span v-show="p.approvedate"></span>
+                </p>
+                <p class="card-text font-14">
+                    <strong class="text-blue">Approve </strong>
+                    <span v-if="p.approve === 'Y'"><i class="fa fa-check text-green"></i> Completed <em class="text-green on-right" v-text="p.approvedate"></em></span>
+                    <span v-else><em class="text-grey">( Not Approve )</em></span>
+                </p>
+                <p class="card-text font-14">
+                    <strong class="text-blue">Food Coupon</strong>
+                    <button class="btn btn-sm qty-control left" v-bind:disabled="coupons === 0 ? true : false" v-on:click="coupon(-1)"><i class="fa fa-minus"></i></button>
+                    <span style="font-size:17px" class="on-left on-right badge badge-inverse" v-text="coupons"></span>
+                    <button class="btn btn-sm qty-control right" v-bind:disabled="coupons === max ? true : false" v-on:click="coupon(1)"><i class="fa fa-plus"></i></button>
+                    <em v-show="maximunCoupon" class="text-red">Maximum</em>
+                </p>
+                <!-- approve button -->
+                <button v-show="!disableds.approve" v-on:click="approving()" class="btn btn-lg btn-green text-white"><i class="fa fa-check"></i> <span v-text="labels.approve"></span></button>
+            </div>
+            <div class="card-footer"></div>
+        </div>
+    </fieldset>
+    <!-- begin card -->
+    <div v-show="panels.approve" class="card card-inverse bg-gradient-black">
+        <div class="card-block">
+            <h4 class="card-title m-t-5 m-b-10">Data Not Found</h4>
+            <p class="card-text m-b-15 font-14">Please re-input registrartion code again</p>
+        </div>
+    </div>
+    <!-- end card -->
+</div>
+<!-- end panel -->

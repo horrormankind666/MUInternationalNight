@@ -1,0 +1,151 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Mahidol International Night | Login Page</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="Mahidol University International Night" name="description" />
+    <meta content="odd nopparat" name="nopparat.jap@mahidol.edu" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="../assets/img/logo/logo_icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="../assets/img/logo/logo_icon.png" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="../assets/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <link href="../assets/plugins/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/plugins/font-awesome/5.3/css/all.min.css" rel="stylesheet" />
+    <link href="../assets/plugins/animate/animate.min.css" rel="stylesheet" />
+    <link href="../assets/css/default/style.min.css" rel="stylesheet" />
+    <link href="../assets/css/default/style-responsive.min.css" rel="stylesheet" />
+    <link href="../assets/css/default/theme/default.css" rel="stylesheet" id="theme" />
+    <link href="../assets/css/my-style.css" rel="stylesheet" />
+    <script src="../assets/plugins/pace/pace.min.js"></script>
+    <link rel="icon" href="~/assets/img/logo/logo_icon.png">
+</head>
+<body class="pace-top bg-white">
+    @using System;
+    @using System.Text;
+    @using System.Web;
+    @{
+        string[] whitelists = File.ReadAllLines(HttpContext.Current.Server.MapPath("whitelist.txt"));
+        StringBuilder script = new StringBuilder();
+        string username = Request.Form["username"];
+        string password = Request.Form["password"];
+        string types = Request.Form["types"];
+        types = string.IsNullOrEmpty(types) ? "STAFF" : types;
+        string currentyear = DateTime.Today.Year.ToString();
+        if (Request.Cookies["username"] != null) { Response.Cookies["username"].Expires = DateTime.Now.AddDays(-1); }
+        if (Request.Cookies[types] != null) { Response.Cookies[types].Expires = DateTime.Now.AddDays(-1); }
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+        {
+            var has = Array.FindAll(whitelists, s => s.Equals(username));
+            if (has.Length > 0)
+            {
+                try
+                {
+                    Authen.Verify(username, password, types);
+                    Logins login = new Logins(types);
+                    switch (login.Authen)
+                    {
+                        case "true":
+                            HttpCookie httpcookie = new HttpCookie("username");
+                            httpcookie.Value = login.FullNameEn;
+                            HttpContext.Current.Response.Cookies.Add(httpcookie);
+
+                            script.Append("<script type='text/javascript'>window.location.href='index.cshtml'</script>");
+                            break;
+
+                        case "false":
+                        default:
+                            script.AppendFormat(@"<script type='text/javascript'>alert('{0}')</script>", login.Message);
+                            break;
+                    }
+                    HttpContext.Current.Response.Write(script);
+                }
+                catch { }
+            }
+
+        }
+    }
+    <!-- begin #page-loader -->
+    <div id="page-loader" class="fade show"><span class="spinner"></span></div>
+    <!-- end #page-loader -->
+    <!-- begin #page-container -->
+    <div id="page-container" class="fade">
+        <!-- begin login -->
+        <div class="login login-with-news-feed">
+            <!-- begin news-feed -->
+            <div class="news-feed">
+                <div class="news-image" style="background-image: url(../assets/img/login-bg/login-bg-11.jpg)"></div>
+                <div class="news-caption">
+                    <h4 class="caption-title"><b>Mahidol</b> International Night <span class="text-teal">@currentyear</span></h4>
+                    <p></p>
+                </div>
+            </div>
+            <!-- end news-feed -->
+            <!-- begin right-content -->
+            <div class="right-content">
+                <!-- begin login-header -->
+                <div class="login-header">
+                    <div class="brand">
+                        <img src="~/assets/img/logo/logoxeng.png" />
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-sign-in"></i>
+                    </div>
+                </div>
+                <!-- end login-header -->
+                <!-- begin login-content -->
+                <div class="login-content">
+                    <form action="login.cshtml" method="post" class="margin-bottom-0">
+                        <div class="form-group m-b-15">
+                            <input type="text" name="username" class="form-control form-control-lg" placeholder="Email Address" required />
+                        </div>
+                        <div class="form-group m-b-15">
+                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Password" required />
+                        </div>
+                        <div class="checkbox checkbox-css m-b-30">
+                            <input type="checkbox" id="remember_me_checkbox" value="" />
+                            <label class="font-14" for="remember_me_checkbox">
+                                Remember Me
+                            </label>
+                        </div>
+                        <div class="login-buttons">
+                            <button type="submit" class="btn btn-info btn-block btn-lg">Log in</button>
+                        </div>
+                        <div class="m-t-20 m-b-40 p-b-40 text-inverse font-14">
+                            Not a member yet? Click <a href="https://myinternet.mahidol.ac.th/indexstaff.php" target="_blank" class="text-success">here</a> to register.<br />
+                            <a href="~/admin/start/howtouse.html" class="text-success">How to use</a>
+                        </div>                        
+                        <hr />
+                        <p class="text-center text-grey-darker font-14">
+                            &copy; Mahidol University All Right Reserved @currentyear
+                        </p>
+                    </form>
+                </div>
+                <!-- end login-content -->
+            </div>
+            <!-- end right-container -->
+        </div>
+        <!-- end login -->
+    </div>
+    <!-- end page container -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="../assets/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="../assets/plugins/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <!--[if lt IE 9]>
+        <script src="../assets/crossbrowserjs/html5shiv.js"></script>
+        <script src="../assets/crossbrowserjs/respond.min.js"></script>
+        <script src="../assets/crossbrowserjs/excanvas.min.js"></script>
+    <![endif]-->
+    <script src="../assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../assets/plugins/js-cookie/js.cookie.js"></script>
+    <script src="../assets/js/theme/default.min.js"></script>
+    <script src="../assets/js/apps.min.js"></script>
+    <!-- ================== END BASE JS ================== -->
+    <script>
+        $(() => {
+            App.init()
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Mahidol International Night</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="Mahidol University International Night" name="description" />
+    <meta content="odd nopparat" name="nopparat.jap@mahidol.edu" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="../assets/img/logo/logo_icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="../assets/img/logo/logo_icon.png" />
+    <link rel="icon" href="~/assets/img/logo/logo_icon.png">
+    <!-- ================== BEGIN BASE CSS STYLE ================== -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/font-awesome/5.2/css/all.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/animate/animate.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/css/default/style.css" rel="stylesheet" />
+    <link href="~/admin/assets/css/default/style-responsive.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/css/default/theme/default.css" rel="stylesheet" id="theme" />
+    <link href="../assets/css/my-style.css" rel="stylesheet" />
+    <!-- ================== END BASE CSS STYLE ================== -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="~/assets/plugins/pace/pace.min.js"></script>
+    <!-- ================== END BASE JS ================== -->
+</head>
+<body class="pace-top">
+    <!-- begin #page-loader -->
+    <div id="page-loader" class="fade show"><span class="spinner"></span></div>
+    <!-- end #page-loader -->
+    <!-- begin #page-container -->
+    <div id="page-container">
+        @{
+            string currentyear = DateTime.Today.Year.ToString();
+        }
+        <div class="login">
+            <!-- begin brand -->
+            <div class="login-header">
+                <div class="brand">
+                    <img src="~/assets/img/logo/logoxeng.png" class="image" />
+                </div>
+                <div class="icon">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+            <div class="text-center text-black font-16"><b>Mahidol</b> International Night <span class="text-blue-darker">@currentyear</span></div>
+            <div class="padding10" style="padding-top:10px;"></div>
+            <!-- end brand -->
+            <!-- begin login-content -->
+            <fieldset v-bind:disabled="disableds.approve">
+                <div class="card card-inverse bg-gradient-black">
+                    <div class="login-content" style="padding: 20px !important; padding-top: 0px !important">
+                        <div class="card-block" v-for="(p,i) in profiles" :key="i">
+                            <h4 class="card-title m-t-5 m-b-10">
+                                <span v-text="p.titlename"></span> <span v-text="p.fullname"></span>
+                                <span v-show="p.registrationCode" class="badge badge-primary"><span v-text="p.registrationCode"></span></span>
+                            </h4>
+
+                            <p class="card-text m-b-15 font-16"><strong class="text-yellow">Faculty</strong> <span v-text="p.section"></span></p>
+                            <p class="card-text m-b-15 font-16"><strong class="text-yellow">Status</strong> <span v-text="p.statusMU"></span> <em class="text-orange" v-text="p.studentDegree"></em></p>
+                            <p class="card-text m-b-15 font-16"><strong class="text-yellow">Country</strong> <span v-text="p.countryNameEN"></span></p>
+                            <p class="card-text m-b-15 font-16">
+                                <strong class="text-yellow">Ticket</strong> <span v-text="p.event1"></span> <i class="fa fa-clock"></i> <em class="text-grey" v-text="p.createdate"></em>
+                            </p>
+                            <p class="card-text m-b-15 font-16">
+                                <strong class="text-yellow">Approve </strong>
+                                <span v-if="p.approve === 'Y'"><i class="fa fa-check text-lime"></i> Completed<em class="text-lime on-right" v-text="p.approvedate"></em></span>
+                                <span v-else><em class="text-grey">( Not Approve )</em></span>
+                            </p>
+                            <p class="card-text font-16">
+                                <strong class="text-yellow">Food Coupon</strong>
+                                <button class="btn btn-sm qty-control left" v-bind:disabled="coupons === 0 ? true : false" v-on:click="coupon(-1)"><i class="fa fa-minus"></i></button>
+                                <span style="font-size:17px" class="on-left on-right badge badge-inverse" v-text="coupons"></span>
+                                <button class="btn btn-sm qty-control right" v-bind:disabled="coupons === max ? true : false" v-on:click="coupon(1)"><i class="fa fa-plus"></i></button>
+                                <em v-show="maximunCoupon" class="text-red">Maximum</em>
+                            </p>
+                        </div>
+                        <div v-show="!disableds.approve" class="margin-bottom-0" style="padding-top: 20px;">
+                            <div class="form-group m-b-20">
+                                <input type="password" v-model="password" v-on:keypress="onApproveEnter(event)" class="form-control form-control-lg" placeholder="Password" required />
+                            </div>
+                            <div class="login-buttons">
+                                <button type="button" v-bind:disabled="autoDisabled" v-bind:class="autoDisabledClass" v-on:click="approving()" class="btn btn-info btn-block btn-lg">Approve</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end login-content -->
+            </fieldset>
+        </div>
+
+        <!-- end error -->
+        <!-- begin scroll to top btn -->
+        <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+        <!-- end scroll to top btn -->
+    </div>
+    <!-- end page container -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="~/admin/assets/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="~/Scripts/vue.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Signalr/hubs"></script>
+    <!--[if lt IE 9]>
+        <script src="~/admin/assets/crossbrowserjs/html5shiv.js"></script>
+        <script src="~/admin/assets/crossbrowserjs/respond.min.js"></script>
+        <script src="~/admin/assets/crossbrowserjs/excanvas.min.js"></script>
+    <![endif]-->
+    <script src="~/admin/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/admin/assets/plugins/js-cookie/js.cookie.js"></script>
+    <script src="~/admin/assets/js/theme/default.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap-sweetalert/sweetalert.min.js"></script>
+    <script src="~/admin/assets/js/apps.min.js"></script>
+    <!-- ================== END BASE JS ================== -->
+
+    <script>$(() => { App.init() })</script>
+</body>
+</html>
+<script src="~/connection.js"></script>
+<script>
+    var app = new Vue({
+        el: "#page-container",
+        data: {
+            connect: {
+                class: "",
+                time: "",
+                online: 0,
+                approved: 0
+            },
+            max: 5,
+            registerCode: "",
+            password: "",
+            profiles: [],
+            coupons: 0,
+            disabled: {
+                approve: true
+            },
+            panels: {
+                approve: true
+            },
+            username: "",
+            approve: "",
+            disableds: {
+                approve: false,
+            }
+        },
+        mounted() {
+            this.querystring();
+        },
+        methods: {
+            querystring() {
+                let uri = window.location.search.substring(1);
+                let params = new URLSearchParams(uri);
+                this.registerCode = params.get("qr");
+            },
+            SearchApproveFromCode(data) {
+                this.profiles = data;
+                this.panels.approve = (this.profiles && this.profiles.length ? false : true);
+
+                if (this.profiles && this.profiles.length)
+                {
+                    this.disableds.approve = (this.profiles[0].approve === "Y" ? true : false);
+                    this.username = this.profiles[0].fullname;
+                    this.approve = this.profiles[0].approve;
+                }
+                else
+                    this.modalMessage("Failed", "Data not Found", "warning", "btn btn-danger");
+            },
+            approving() {
+                if (this.registerCode && this.password && this.password.length > 3)
+                {
+                    muinternightHub.server.couponToServer(this.registerCode, this.coupons);
+                    muinternightHub.server.approveToServer(this.registerCode, "QR Code", this.password);
+                }
+
+                return false;
+            },
+            ApproveFromServer(data) {
+                if (data && data[0].approve === "Y" && this.registerCode)
+                {
+                    this.disableds.approve = true;
+                    this.modalMessage("Approved", ("Registration Code : " + this.registerCode), "success", "btn btn-success");
+                    muinternightHub.server.searchForApproveToServer(this.registerCode);
+                    this.password = "";
+                }
+                else
+                    this.modalMessage("Failed", "Invalid password", "warning", "btn btn-danger");
+            },
+            onApproveEnter(e) {
+                if (e.keyCode === 13 && this.password.length > 3)
+                {
+                    this.approving();
+
+                    return false;
+                }
+            },
+            modalMessage(titles, texts, icons, btns) {
+                swal({
+                    title: titles,
+                    text: texts,
+                    icon: icons,
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            value: true,
+                            visible: true,
+                            className: btns,
+                            closeModal: true
+                        }
+                    }
+                });
+            },
+            coupon(data) {
+                this.coupons += data;
+                this.coupons = (this.coupons < 0 ? 0 : this.coupons);
+                this.coupons = (this.coupons > this.max ? this.max : this.coupons);
+            },
+            CouponFromServer(data) {
+                if (data && data.length)
+                    this.modalMessage("Coupon", ("Used : " + data[0].coupon + " Time(s)"), "success", "btn btn-success");
+                else
+                    this.modalMessage("Failed", "Data Not Found", "warning", "btn btn-warning");
+            },
+        },
+        computed: {
+            autoDisabledClass() { return this.password.length > 3 ? "" : "disabled"; },
+            autoDisabled() { return this.password.length > 3 ? false : true; },
+            maximunCoupon() { return this.coupons >= this.max ? true : false; },
+            maximunCouponClass() { return this.coupons >= this.max ? "disabled" : "" },
+            minimunCouponClass() { return this.coupons == 0 ? "disabled" : "" },
+        }
+    })
+    // signalR
+    $.connection.hub.start().done(() => {
+        if (app.registerCode) muinternightHub.server.searchForApproveToServer(app.registerCode)
+    });
+
+    muinternightHub.client.SearchApproveFromCode = app.SearchApproveFromCode; // โหลดชื่อคนลงทะเบียนเพื่ออนุมัติ
+    muinternightHub.client.ApproveFromServer = app.ApproveFromServer; // รายงานผลว่า approve ผ่านหรือไม่
+    muinternightHub.client.CouponFromServer = app.CouponFromServer; // อัพเดทยอดคูปองที่ใช้
+
+    $.connection.hub.reconnecting(() => {
+        app.connect.class = "fg-red";
+        tryReconnect = true;
+    })
+
+    $.connection.hub.reconnected(() => { tryReconnect = false; });
+</script>

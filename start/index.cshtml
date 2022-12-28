@@ -1,0 +1,1179 @@
+﻿<!DOCTYPE html>
+<!--
+    [if IE 8]>
+        <html lang="en" class="ie8">
+    <![endif]
+-->
+<!--
+    [if !IE]>
+<!-->
+        <html lang="en">
+<!--
+    <![endif]
+-->
+<head>
+    @RenderPage("~/Shared/_Include.cshtml")
+    @{
+        string ip = Request.UserHostAddress;
+    }
+</head>
+<body
+    data-spy="scroll"
+    data-target="#header"
+    data-offset="51">
+    <div
+        id="page-container"
+        class="fade">
+        <div
+            id="header"
+            class="header navbar navbar-transparent navbar-fixed-top bg-mahidol-blue">
+            <div class="container">
+                <div class="navbar-header">
+                    <button
+                        type="button"
+                        class="navbar-toggle collapsed"
+                        data-toggle="collapse"
+                        data-target="#header-navbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="index.html" class="navbar-brand">
+                        <img src="../assets/img/logo/logoe.png" />
+                    </a>
+                </div>
+                <div
+                    id="header-navbar"
+                    class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="nav-item">
+                            <a
+                                id="home-link"
+                                class="nav-link active"
+                                href="#home">
+                                HOME
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="registration-link"
+                                class="nav-link"
+                                href="#registration"
+                                data-click="scroll-to-target">
+                                REGISTRATION
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="list-link"
+                                class="nav-link"
+                                href="#list"
+                                data-click="scroll-to-target">
+                                LIST
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="qrcode-link"
+                                class="nav-link"
+                                href="#qrcode"
+                                data-click="scroll-to-target">
+                                QR-CODE
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="event-link"
+                                class="nav-link"
+                                href="#event"
+                                data-click="scroll-to-target">
+                                EVENT
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="work-link"
+                                class="nav-link"
+                                href="#work"
+                                data-click="scroll-to-target">
+                                GALLERY
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="contact-link"
+                                class="nav-link"
+                                href="#contact"
+                                data-click="scroll-to-target">
+                                CONTACT
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="~/admin/start/login.cshtml">
+                                STAFF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div
+            id="home"
+            class="content has-bg home bg-default-darker">
+            <div
+                class="content-bg"
+                style="
+                    background-image: url(../assets/img/bg/bg-home.jpg);
+                    background-position: right
+                "
+                data-paroller="true"
+                data-paroller-factor="0.5"
+                data-paroller-factor-xs="0.25">
+            </div>
+            <div class="container home-content">
+                <div class="row">
+                    <div class="col">
+                        <h1>
+                            Mahidol University
+                            <br />
+                            International Night
+                            <br />
+                            <span
+                                v-text="labels.currentyear"
+                                class="text-blue">
+                            </span>
+                        </h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div
+                            v-if="openSeasons && openSeasons.length"
+                            v-for="(o,i) in openSeasons" :key="i">
+                            <h4>
+                                <span class="text-yellow"><strong>Registation</strong></span>
+                                <span v-text="o.opendate"></span> - <span v-text="o.closedate"></span>
+                            </h4>
+                            <div class="content-desc">
+                                <span class="fg-white"><strong>On</strong></span> <span v-text="o.livedate"></span><br />
+                                <span class="fg-white"><strong>Venue</strong></span> <span v-text="o.location"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a
+                            href="#qrcode"
+                            class="btn btn-theme">
+                            QR Code
+                        </a>
+                        &nbsp;
+                        <a
+                            href="#registration"
+                            class="btn btn-outline">
+                            Register
+                        </a>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            id="registration"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <div class="container">
+                <input                    
+                    type="hidden"
+                    id="ipaddress"
+                    value="@ip"
+                />
+                <h2 class="content-title">Registration</h2>
+                <div v-if="autoCloseForm">
+                    <h4 class="content-desc">
+                        For thai people registration only&nbsp;
+                        <strong
+                            v-text="labels.limit"
+                            class="text-green">
+                        </strong>&nbsp;
+                        Persons
+                    </h4>
+                    <div name="demo-form">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <fieldset v-bind:disabled="disabled.registerForm">
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="studentCode">
+                                            Student ID / Passport No. / Thai Citizen ID
+                                        </label>
+                                        <div class="input-group">
+                                            <input                                                
+                                                type="text"
+                                                id="studentCode"
+                                                class="form-control"
+                                                v-uppercase
+                                                v-on:keypress="englishNumeric"
+                                                v-on:blur="findStudentcode"
+                                                v-model.trim="forms.IdCard"
+                                                maxlength="13"
+                                            />
+                                            <span
+                                                class="input-group-addon"
+                                                v-show="disabled.searchPerson">
+                                                Searching...
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="title">
+                                            Title Prefix
+                                        </label>
+                                        <select
+                                            class="form-control"
+                                            v-model="forms.TitleName"
+                                            v-on:change="TitleNameChange">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="Mr.">Mr.</option>
+                                            <option value="Mrs.">Mrs.</option>
+                                            <option value="Miss">Miss</option>
+                                            <option value="Asst.Prof.">Asst.Prof.</option>
+                                            <option value="Assoc.Prof.">Assoc.Prof.</option>
+                                            <option value="Prof.">Prof.</option>
+                                            <option value="Emeritus Prof.">Emeritus Prof.</option>
+                                            <option value="Dr.">Dr.</option>                                            
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            for="otherTitle">
+                                            Other Title Prefix
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="otherTitle"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.TitleNameOther"
+                                            v-bind:disabled="disabled.otherTitle"
+                                            maxlength="50"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="firstname">
+                                            First Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="firstname"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.Firstname"
+                                            maxlength="50"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            for="middlename">
+                                            Middle Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="middlename"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.MiddleName"
+                                            maxlength="50"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="lastname">
+                                            Last Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="lastname"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.Lastname"
+                                            maxlength="50"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="email">
+                                            Email Address
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.Email"
+                                            maxlength="255"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            for="facebook">
+                                            Facebook
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="facebook"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-model.trim="forms.Facebook"
+                                            maxlength="255"
+                                        />
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <fieldset v-bind:disabled="disabled.registerForm">
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="section">
+                                            Faculty / College / Institue / Center
+                                        </label>
+                                        <select
+                                            id="section"
+                                            class="form-control"
+                                            v-model="forms.Section">
+                                            <option value="" selected>Please Select</option>
+                                            <option
+                                                v-for="(f,i) in faculties" :key="f.facultycode" :value="f.facultycode"
+                                                v-text="f.facultycode + ' - ' + f.facultyname">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="country">
+                                            Country
+                                        </label>
+                                        <select
+                                            id="country"
+                                            class="form-control"
+                                            v-model="forms.Country">
+                                            <option value="" selected>Please Select</option>
+                                            <option
+                                                v-for="(c,i) in countries" :key="c.id" :value="c.id"
+                                                v-text="c.countryNameEN">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="food">
+                                            Food
+                                        </label>
+                                        <select
+                                            id="food"
+                                            class="form-control"
+                                            v-model="forms.Food">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="General">General</option>
+                                            <option value="Vegetarian">Vegetarian</option>
+                                            <option value="Halal">Halal</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="required"
+                                            for="statusMU">
+                                            Status at Mahidol University
+                                        </label>
+                                        <select
+                                            id="statusMU"
+                                            class="form-control"
+                                            v-on:change="StatusMUChange"
+                                            v-model="forms.StatusMU">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="Student">Student</option>
+                                            <option value="Staff">Staff</option>
+                                            <option value="Faculty">Faculty</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="position">Position</label>
+                                        <input
+                                            type="text"
+                                            id="position"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-bind:disabled="disabled.position"
+                                            v-model.trim="position"
+                                            maxlength="255"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="degree">Degree</label>
+                                        <select
+                                            id="degree"
+                                            class="form-control"
+                                            v-on:change="DegreeChange"
+                                            v-model="forms.StudentDegree"
+                                            v-bind:disabled="disabled.degree">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="Bachelor">Bachelor</option>
+                                            <option value="Master">Master</option>
+                                            <option value="Ph.D">Ph.D</option>
+                                            <option value="Exchange / Visiting">Exchange / Visiting</option>
+                                            <option value="Fellow">Fellow</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="otherDegree">Other Degree</label>
+                                        <input
+                                            type="text"
+                                            id="otherDegree"
+                                            class="form-control"
+                                            v-on:keypress="englishChar"
+                                            v-bind:disabled="disabled.degreeOther"
+                                            v-model.trim="forms.StudentDegreeOther"
+                                            maxlength="255"
+                                        />
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div
+                                class="col-md-12 col-sm-12"
+                                v-show="
+                                    isAdd ||
+                                    isUpdate
+                                ">
+                                <hr />
+                                <fieldset v-bind:disabled="disabled.registerForm">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary btn-block"
+                                        v-show="isAdd"                                            
+                                        v-bind:disabled="autoShutdown"
+                                        v-on:click="registering">
+                                        <span v-text="labels.register"></span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary btn-block"
+                                        v-show="isUpdate"
+                                        v-on:click="registering">
+                                        <span v-text="labels.update"></span>
+                                    </button>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="approved"
+                        v-show="
+                            !isAdd &&
+                            !isUpdate
+                        ">
+                        <hr />
+                        <div class="panel panel-success">
+                            <div class="panel-body">
+                                Has been approved
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="!autoCloseForm">
+                    <h1 class="text-center text-grey">Registration Close</h1>
+                </div>
+            </div>
+        </div>
+        <div
+            id="home0"
+            class="content has-bg bg-default-darker"
+            data-scrollview="true">
+            <div
+                class="content-bg"
+                style="background-image: url(../assets/img/bg/bg-registrationlist.jpg)"
+                data-paroller-factor="0.5"
+                data-paroller-factor-md="0.01"
+                data-paroller-factor-xs="0.01">
+            </div>
+            <div class="container"></div>
+        </div>
+        <div
+            id="list"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <div class="container pr-0 pl-0">
+                <h2 class="content-title">Registration List</h2>
+                <table
+                    id="table_id"
+                    class="display table table-striped table-bordered"
+                    style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Reg.Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th class="d-none d-sm-table-cell">Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th>Full Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th>Country&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th class="d-none d-sm-table-cell">Registered&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div
+            id="quote"
+            class="content has-bg bg-default-darker"
+            data-scrollview="true">
+            <div
+                class="content-bg"
+                style="background-image: url(../assets/img/bg/bg-qrcode.jpg)"
+                data-paroller-factor="0.5"
+                data-paroller-factor-md="0.01"
+                data-paroller-factor-xs="0.01">
+            </div>
+            <div class="container"></div>
+        </div>
+        <div
+            id="qrcode"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <input
+                type="hidden"
+                id="registercode"
+                value="@Request.QueryString["qr"]"
+            />
+            <div class="container">
+                <img
+                    id="img-buffer"
+                    class="hide"
+                    src="../assets/img/logo/logo_icon.png"
+                />
+                <h2 class="content-title">QR Code</h2>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="required">Registration Code / Student ID</label>
+                                    <input
+                                        type="text"
+                                        class="form-control form-control-lg"
+                                        v-on:keypress="onEnter"
+                                        v-model="registerCode"
+                                        maxlength="15"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <button
+                                        type="button"
+                                        class="btn btn-theme btn-block"
+                                        v-bind:disabled="autoQrCodeButton"
+                                        v-on:click="createQrcode">
+                                        Create QR Code
+                                    </button>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div id="qrcodex"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            id="milestone"
+            class="content has-bg bg-default-darker"
+            data-scrollview="true">
+            <div
+                class="content-bg"
+                style="background-image: url(../assets/img/bg/bg-eventtimeline.jpg)"
+                data-paroller-factor="0.5"
+                data-paroller-factor-md="0.01"
+                data-paroller-factor-xs="0.01">
+            </div>
+            <div class="container"></div>
+        </div>
+        <div
+            id="event"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <div class="container">
+                <h2 class="content-title">Event Timeline</h2>
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="service">
+                            <div
+                                class="icon bg-theme"
+                                data-animation="true"
+                                data-animation-type="bounceIn">
+                                <i class="fa fa-fast-backward"></i>
+                            </div>
+                            <div class="info">
+                                <h4 class="title">17.30 hrs.</h4>
+                                <p class="desc">Registration</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="service">
+                            <div
+                                class="icon bg-theme"
+                                data-animation="true"
+                                data-animation-type="bounceIn">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <div class="info">
+                                <h4 class="title">18.00 hrs.</h4>
+                                <p class="desc">Event</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="service">
+                            <div
+                                class="icon bg-theme"
+                                data-animation="true"
+                                data-animation-type="bounceIn">
+                                <i class="fa fa-fast-forward"></i>
+                            </div>
+                            <div class="info">
+                                <h4 class="title">20.30 hrs.</h4>
+                                <p class="desc">Closing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="card card-inverse bg-gradient-black">
+                            <div class="card-block padding2">
+                                <h4 class="card-title text-center text-white">Event Information</h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Brief Introduction about College of Music ( Clip )</li>
+                                    <li class="list-group-item">Performance by MU-IR Ambassadors</li>
+                                    <li class="list-group-item">Musical show by College of Music</li>
+                                    <li class="list-group-item">Report by <b><i>Assoc. Prof. Nopraenue Sajjarax Dhirathiti, Acting Vice President for International Relations and Corporate Communication</i></b></li>
+                                    <li class="list-group-item">Opening Address by <b><i>Prof. Banchong Mahaisavariya, Acting President</i></b></li>
+                                    <li class="list-group-item">Student Reflection by MU Alumni ( Clip )</li>
+                                    <li class="list-group-item">Dinner</li>
+                                    <li class="list-group-item">Performance by Thai students "Thai Bamboo Dance" ( Faculty of Liberal Arts )</li>
+                                    <li class="list-group-item">Games and prize draws</li>
+                                    <li class="list-group-item">Performance by Bhutanese students ( Faculty of Science )</li>
+                                    <li class="list-group-item"><b>Mr. & Miss Mahidol University International Night 2019 Contest ( First round )</b></li>
+                                    <li class="list-group-item">Performance by Napali students "Nepali Jhalak" ( Faculty of Graduate Studies )</li>
+                                    <li class="list-group-item">Prize draws</li>
+                                    <li class="list-group-item"><b>Mr. & Miss Mahidol University International Night 2019 Contest ( Final round )</b></li>
+                                    <li class="list-group-item">Performance by Indonesian students ( Faculty of Graduate Studies )</li>
+                                    <li class="list-group-item">Announcement for <b>Mr. & Miss Mahidol University International Night 2019 and Popular Vote Winner ( Group photo )</b></li>
+                                    <li class="list-group-item">Musical Show by College of Music</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            id="action-box"
+            class="content has-bg bg-default-darker"
+            data-scrollview="true">
+            <div
+                class="content-bg"
+                style="background-image: url(../assets/img/bg/bg-gallery.jpg)"
+                data-paroller-factor="0.5"
+                data-paroller-factor-md="0.01"
+                data-paroller-factor-xs="0.01">
+            </div>
+            <div class="container"></div>
+        </div>
+        <div
+            id="work"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <div class="container">
+                <h2 class="content-title">Gallery Last year</h2>
+                <div class="row row-space-10">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event1.jpg"
+                                    alt="picture 1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="..//assets/img/work/2018/event2.jpg"
+                                    alt="picture 2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event3.jpg"
+                                    alt="picture 3"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event4.jpg"
+                                    alt="picture 4"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-space-10">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event5.jpg"
+                                    alt="picture 5"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event6.jpg"
+                                    alt="picture 6"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                     src="../assets/img/work/2018/event7.jpg"
+                                     alt="picture 7"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event8.jpg"
+                                    alt="picture 8"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event9.jpg"
+                                    alt="picture 9"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event10.jpg"
+                                    alt="picture 10"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                         <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event11.jpg"
+                                    alt="picture 11"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event12.jpg"
+                                    alt="picture 12"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event13.jpg"
+                                    alt="picture 13"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event14.jpg"
+                                    alt="picture 14"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event15.jpg"
+                                    alt="picture 15"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event16.jpg"
+                                    alt="picture 16"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event17.jpg"
+                                    alt="picture 17"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event18.jpg"
+                                    alt="picture 18"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event19.jpg"
+                                    alt="picture 19"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event20.jpg"
+                                    alt="picture 20"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event21.jpg"
+                                    alt="picture 21"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event22.jpg"
+                                    alt="picture 22"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event23.jpg"
+                                    alt="picture 23"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event24.jpg"
+                                    alt="picture 24"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event25.jpg"
+                                    alt="picture 25"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event26.jpg"
+                                    alt="picture 26"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event27.jpg"
+                                    alt="picture 27"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event28.jpg"
+                                    alt="picture 28"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event29.jpg"
+                                    alt="picture 29"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event30.jpg"
+                                    alt="picture 30"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event31.jpg"
+                                    alt="picture 31"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="work">
+                            <div class="image">
+                                <img
+                                    src="../assets/img/work/2018/event32.jpg"
+                                    alt="picture 32"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            id="client"
+            class="content has-bg bg-default-darker"
+            data-scrollview="true">
+            <div
+                class="content-bg"
+                style="background-image: url(../assets/img/bg/bg-contactus.jpg)"
+                data-paroller-factor="0.5"
+                data-paroller-factor-md="0.01"
+                data-paroller-factor-xs="0.01">
+            </div>
+        </div>
+        <div
+            id="contact"
+            class="content bg-silver-lighter"
+            data-scrollview="true">
+            <div class="container">
+                <h2 class="content-title">Contact Us</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            <strong style="font-size: 14px">Naowarat Imjai</strong><br />
+                            International Relations and Corporate Communication Section<br />
+                            Faculty of Graduate Studies<br />
+                        </p>
+                        <p>
+                            <span class="phone">
+                                <i class="fa fa-phone-square"></i> 02-441-4125 #133,134
+                            </span>
+                            <br />
+                            <i class="fa fa-envelope"></i>&nbsp;
+                            <a
+                                class="text-blue"
+                                href="mailto:naowarat.imj@mahidol.ac.th"
+                                target="_blank">
+                                naowarat.imj@mahidol.ac.th
+                            </a>
+                        </p>
+                        <hr />
+                        <p>
+                            <strong style="font-size: 14px">International Relations Division Office</strong><br />
+                            4<sup>th</sup> Floor, Office of the President Building<br />
+                        </p>
+                        <p>
+                            <span class="phone">
+                                <i class="fa fa-phone-square"></i> 66 (0) 2849-6231-3, 66 (0) 2849-6235-6
+                            </span>
+                            <br />
+                            <i class="fa fa-envelope"></i>&nbsp;
+                            <a
+                                class="text-blue"
+                                href="mailto:opinter@mahidol.ac.th"
+                                target="_blank">
+                                opinter@mahidol.ac.th
+                            </a>
+                        </p>
+                        <hr />
+                        <p>
+                            <i class="fa fa-map-signs"></i> Mahidol University
+                            999 Phuttamonthon 4 Road, Salaya, Nakhon Pathom 73170, Thailand.
+                        </p>
+                    </div>
+                    <div class="col-md-6 form-col">
+                        <fieldset v-bind:disabled="disabled.sendmessage">
+                            <div class="form-horizontal">
+                                <div class="form-group row m-b-15">
+                                    <label class="col-form-label col-md-3 text-md-right required">Name</label>
+                                    <div class="col-md-9">
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            v-model="contacts.name"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group row m-b-15">
+                                    <label class="col-form-label col-md-3 text-md-right required">Email Address</label>
+                                    <div class="col-md-9">
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            v-model="contacts.email"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group row m-b-15">
+                                    <label class="col-form-label col-md-3 text-md-right required">Message</label>
+                                    <div class="col-md-9">
+                                        <textarea
+                                            class="form-control"
+                                            v-model="contacts.message"
+                                            rows="10">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row m-b-15">
+                                    <label class="col-form-label col-md-3 text-md-right"></label>
+                                    <div class="col-md-9 text-left">
+                                        <button
+                                            type="button"
+                                            class="btn btn-theme btn-block"
+                                            v-on:click="sendMessage()">
+                                            <span v-text="labels.sendmessage"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @RenderPage("~/Shared/_Footer.cshtml")
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    $("html, body").animate({
+        scrollTop: 0
+    }, 500);
+
+    document.addEventListener("click", function (e) {
+        if (document.activeElement.toString() === "[object HTMLButtonElement]")
+            e.target.blur();
+    });
+
+    var headerHeight = parseInt($("#header").height());
+
+    $(".home-content").css({
+        "margin-top": ((headerHeight + 30) + "px")
+    });
+    
+    $(window).resize(function () {
+        headerHeight = parseInt($("#header").height());
+
+        $(".home-content").css({
+            "margin-top": ((headerHeight + 30) + "px")
+        });        
+    });
+</script>
+<script src="~/connection.js"></script>
+<script src="~/start/index.js"></script>
