@@ -7,7 +7,7 @@
 <!--
     [if !IE]>
 <!-->
-        <html lang="en">
+<html lang="en">
 <!--
     <![endif]
 -->
@@ -15,6 +15,12 @@
     @RenderPage("~/Shared/_Include.cshtml")
     @{
         string ip = Request.UserHostAddress;
+        string pictureEventFilePath = "../assets/img/work/";
+        int eventLastYear = 2019;
+        int numberOfPictureEvent = 60;
+        int i = 0;
+        int j = 0;
+        bool isActived = false;
     }
 </head>
 <body
@@ -26,8 +32,8 @@
         class="fade">
         <div
             id="header"
-            class="header navbar navbar-transparent navbar-fixed-top bg-mahidol-blue">
-            <div class="container">
+            class="content header navbar navbar-transparent navbar-fixed-top bg-mahidol-blue">
+            <div class="container pr-0 pl-0">
                 <div class="navbar-header">
                     <button
                         type="button"
@@ -38,7 +44,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="index.html" class="navbar-brand">
+                    <a
+                        class="navbar-brand"
+                        href="index.html">
                         <img src="../assets/img/logo/logoe.png" />
                     </a>
                 </div>
@@ -78,7 +86,7 @@
                                 class="nav-link"
                                 href="#qrcode"
                                 data-click="scroll-to-target">
-                                QR-CODE
+                                QR CODE
                             </a>
                         </li>
                         <li class="nav-item">
@@ -88,6 +96,14 @@
                                 href="#event"
                                 data-click="scroll-to-target">
                                 EVENT
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="poster-link"
+                                class="nav-link"
+                                href="javascript:doShowPoster()">
+                                POSTER
                             </a>
                         </li>
                         <li class="nav-item">
@@ -111,7 +127,8 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="~/admin/start/login.cshtml">
+                                href="../admin/start/login.cshtml"
+                                target="_blank">
                                 STAFF
                             </a>
                         </li>
@@ -124,23 +141,19 @@
             class="content has-bg home bg-default-darker">
             <div
                 class="content-bg"
-                style="
-                    background-image: url(../assets/img/bg/bg-home.jpg);
-                    background-position: right
-                "
                 data-paroller="true"
                 data-paroller-factor="0.5"
                 data-paroller-factor-xs="0.25">
             </div>
-            <div class="container home-content">
+            <div class="container home-content pr-0 pl-0">
                 <div class="row">
                     <div class="col">
                         <h1>
-                            Mahidol University
+                            <span class="muin">Mahidol University</span>
                             <br />
-                            International Night
+                            INTERNATIONAL NIGHT
                             <br />
-                            <span
+                            <span 
                                 v-text="labels.currentyear"
                                 class="text-blue">
                             </span>
@@ -153,11 +166,14 @@
                             v-if="openSeasons && openSeasons.length"
                             v-for="(o,i) in openSeasons" :key="i">
                             <h4>
-                                <span class="text-yellow"><strong>Registation</strong></span>
-                                <span v-text="o.opendate"></span> - <span v-text="o.closedate"></span>
+                                Registration starts from
+                                <strong><span class="text-yellow" v-text="o.opendate"></span></strong>
+                                <!--
+                                - <span v-text="o.closedate"></span>
+                                -->
                             </h4>
                             <div class="content-desc">
-                                <span class="fg-white"><strong>On</strong></span> <span v-text="o.livedate"></span><br />
+                                The event will be held on <strong><span class="fg-white" v-text="o.livedate"></span></strong><br />
                                 <span class="fg-white"><strong>Venue</strong></span> <span v-text="o.location"></span>
                             </div>
                         </div>
@@ -167,13 +183,15 @@
                     <div class="col">
                         <a
                             href="#qrcode"
-                            class="btn btn-theme">
+                            class="btn btn-theme"
+                            data-click="scroll-to-target">
                             QR Code
                         </a>
                         &nbsp;
                         <a
                             href="#registration"
-                            class="btn btn-outline">
+                            class="btn btn-outline"
+                            data-click="scroll-to-target">
                             Register
                         </a>
                         <br />
@@ -185,8 +203,8 @@
             id="registration"
             class="content bg-silver-lighter"
             data-scrollview="true">
-            <div class="container">
-                <input                    
+            <div class="container pr-0 pl-0">
+                <input
                     type="hidden"
                     id="ipaddress"
                     value="@ip"
@@ -212,7 +230,7 @@
                                             Student ID / Passport No. / Thai Citizen ID
                                         </label>
                                         <div class="input-group">
-                                            <input                                                
+                                            <input 
                                                 type="text"
                                                 id="studentCode"
                                                 class="form-control"
@@ -247,7 +265,7 @@
                                             <option value="Assoc.Prof.">Assoc.Prof.</option>
                                             <option value="Prof.">Prof.</option>
                                             <option value="Emeritus Prof.">Emeritus Prof.</option>
-                                            <option value="Dr.">Dr.</option>                                            
+                                            <option value="Dr.">Dr.</option>
                                             <option value="Other">Other</option>
                                         </select>
                                     </div>
@@ -316,14 +334,12 @@
                                             for="email">
                                             Email Address
                                         </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            class="form-control"
-                                            v-on:keypress="englishChar"
-                                            v-model.trim="forms.Email"
-                                            maxlength="255"
-                                        />
+                                        <input type="email"
+                                               id="email"
+                                               class="form-control"
+                                               v-on:keypress="englishChar"
+                                               v-model.trim="forms.Email"
+                                               maxlength="255" />
                                     </div>
                                     <div class="form-group">
                                         <label
@@ -353,7 +369,11 @@
                                             id="section"
                                             class="form-control"
                                             v-model="forms.Section">
-                                            <option value="" selected>Please Select</option>
+                                            <option
+                                                value=""
+                                                selected>
+                                                Please Select
+                                            </option>
                                             <option
                                                 v-for="(f,i) in faculties" :key="f.facultycode" :value="f.facultycode"
                                                 v-text="f.facultycode + ' - ' + f.facultyname">
@@ -370,7 +390,11 @@
                                             id="country"
                                             class="form-control"
                                             v-model="forms.Country">
-                                            <option value="" selected>Please Select</option>
+                                            <option
+                                                value=""
+                                                selected>
+                                                Please Select
+                                            </option>
                                             <option
                                                 v-for="(c,i) in countries" :key="c.id" :value="c.id"
                                                 v-text="c.countryNameEN">
@@ -412,7 +436,10 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="position">Position</label>
+                                        <label
+                                            for="position">
+                                            Position
+                                        </label>
                                         <input
                                             type="text"
                                             id="position"
@@ -441,7 +468,10 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="otherDegree">Other Degree</label>
+                                        <label
+                                            for="otherDegree">
+                                            Other Degree
+                                        </label>
                                         <input
                                             type="text"
                                             id="otherDegree"
@@ -465,7 +495,7 @@
                                     <button
                                         type="button"
                                         class="btn btn-primary btn-block"
-                                        v-show="isAdd"                                            
+                                        v-show="isAdd"
                                         v-bind:disabled="autoShutdown"
                                         v-on:click="registering">
                                         <span v-text="labels.register"></span>
@@ -496,7 +526,7 @@
                     </div>
                 </div>
                 <div v-if="!autoCloseForm">
-                    <h1 class="text-center text-grey">Registration Close</h1>
+                    <h1 class="text-center text-grey">Registration <span v-text="registrationOpenStatus"></span></h1>
                 </div>
             </div>
         </div>
@@ -511,9 +541,9 @@
                 data-paroller-factor-md="0.01"
                 data-paroller-factor-xs="0.01">
             </div>
-            <div class="container"></div>
+            <div class="container pr-0 pl-0"></div>
         </div>
-        <div
+        <div 
             id="list"
             class="content bg-silver-lighter"
             data-scrollview="true">
@@ -521,15 +551,24 @@
                 <h2 class="content-title">Registration List</h2>
                 <table
                     id="table_id"
-                    class="display table table-striped table-bordered"
-                    style="width:100%">
+                    class="display table table-striped table-bordered w-100 d-none">
                     <thead>
                         <tr>
-                            <th>Reg.Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                            <th class="d-none d-sm-table-cell">Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                            <th>Full Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                            <th>Country&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                            <th class="d-none d-sm-table-cell">Registered&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th>
+                                Reg.Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </th>
+                            <th class="d-none d-sm-table-cell">
+                                Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </th>
+                            <th>
+                                Full Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </th>
+                            <th class="col4">
+                                Country&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </th>
+                            <th class="d-none d-sm-table-cell">
+                                Registered&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -547,7 +586,7 @@
                 data-paroller-factor-md="0.01"
                 data-paroller-factor-xs="0.01">
             </div>
-            <div class="container"></div>
+            <div class="container pr-0 pl-0"></div>
         </div>
         <div
             id="qrcode"
@@ -558,7 +597,7 @@
                 id="registercode"
                 value="@Request.QueryString["qr"]"
             />
-            <div class="container">
+            <div class="container pr-0 pl-0">
                 <img
                     id="img-buffer"
                     class="hide"
@@ -574,7 +613,6 @@
                                     <input
                                         type="text"
                                         class="form-control form-control-lg"
-                                        v-on:keypress="onEnter"
                                         v-model="registerCode"
                                         maxlength="15"
                                     />
@@ -614,75 +652,77 @@
             id="event"
             class="content bg-silver-lighter"
             data-scrollview="true">
-            <div class="container">
+            <div class="container pr-0 pl-0">
                 <h2 class="content-title">Event Timeline</h2>
-                <div class="row">
-                    <div class="col-md-4 col-sm-12">
-                        <div class="service">
-                            <div
-                                class="icon bg-theme"
-                                data-animation="true"
-                                data-animation-type="bounceIn">
-                                <i class="fa fa-fast-backward"></i>
-                            </div>
-                            <div class="info">
-                                <h4 class="title">17.30 hrs.</h4>
-                                <p class="desc">Registration</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <div class="service">
-                            <div
-                                class="icon bg-theme"
-                                data-animation="true"
-                                data-animation-type="bounceIn">
-                                <i class="fa fa-play"></i>
-                            </div>
-                            <div class="info">
-                                <h4 class="title">18.00 hrs.</h4>
-                                <p class="desc">Event</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <div class="service">
-                            <div
-                                class="icon bg-theme"
-                                data-animation="true"
-                                data-animation-type="bounceIn">
-                                <i class="fa fa-fast-forward"></i>
-                            </div>
-                            <div class="info">
-                                <h4 class="title">20.30 hrs.</h4>
-                                <p class="desc">Closing</p>
+                <div
+                    class="d-table timeline w-100"
+                    v-if="eventInfo !== null">
+                    <div class="d-table-row">
+                        <div
+                            class="d-table-cell service"
+                            v-if="eventInfo.timelines && eventInfo.timelines.length"
+                            v-for="(t, i) in eventInfo.timelines" :key="i">
+                            <div class="timelines position-absolute">
+                                <div
+                                    class="icon bg-theme"
+                                    data-animation="true"
+                                    data-animation-type="bounceIn">
+                                    <i
+                                        class="fa fa-fast-backward"
+                                        v-if="i === 0">
+                                    </i>
+                                    <i
+                                        class="fa fa-play"
+                                        v-if="i === 1">
+                                    </i>
+                                    <i
+                                        class="fa fa-fast-forward"
+                                        v-if="i === 2">
+                                    </i>
+                                </div>
+                                <div class="info">
+                                    <h4
+                                        class="title"
+                                        v-text="t.time">
+                                    </h4>
+                                    <p
+                                        class="desc"
+                                        v-text="t.activity">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div
+                    class="row"
+                    v-if="eventInfo !== null">
                     <div class="col-md-12 col-sm-12">
-                        <div class="card card-inverse bg-gradient-black">
+                        <div class="card card-inverse bg-gradient-black">                            
                             <div class="card-block padding2">
                                 <h4 class="card-title text-center text-white">Event Information</h4>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Brief Introduction about College of Music ( Clip )</li>
-                                    <li class="list-group-item">Performance by MU-IR Ambassadors</li>
-                                    <li class="list-group-item">Musical show by College of Music</li>
-                                    <li class="list-group-item">Report by <b><i>Assoc. Prof. Nopraenue Sajjarax Dhirathiti, Acting Vice President for International Relations and Corporate Communication</i></b></li>
-                                    <li class="list-group-item">Opening Address by <b><i>Prof. Banchong Mahaisavariya, Acting President</i></b></li>
-                                    <li class="list-group-item">Student Reflection by MU Alumni ( Clip )</li>
-                                    <li class="list-group-item">Dinner</li>
-                                    <li class="list-group-item">Performance by Thai students "Thai Bamboo Dance" ( Faculty of Liberal Arts )</li>
-                                    <li class="list-group-item">Games and prize draws</li>
-                                    <li class="list-group-item">Performance by Bhutanese students ( Faculty of Science )</li>
-                                    <li class="list-group-item"><b>Mr. & Miss Mahidol University International Night 2019 Contest ( First round )</b></li>
-                                    <li class="list-group-item">Performance by Napali students "Nepali Jhalak" ( Faculty of Graduate Studies )</li>
-                                    <li class="list-group-item">Prize draws</li>
-                                    <li class="list-group-item"><b>Mr. & Miss Mahidol University International Night 2019 Contest ( Final round )</b></li>
-                                    <li class="list-group-item">Performance by Indonesian students ( Faculty of Graduate Studies )</li>
-                                    <li class="list-group-item">Announcement for <b>Mr. & Miss Mahidol University International Night 2019 and Popular Vote Winner ( Group photo )</b></li>
-                                    <li class="list-group-item">Musical Show by College of Music</li>
+                                    <li                                        
+                                        class="list-group-item"
+                                        v-if="eventInfo.details && eventInfo.details.length"
+                                        v-for="(d, i) in eventInfo.details" :key="i">
+                                        <div class="event-info">
+                                            <div
+                                                class="timerange"
+                                                v-if="d.timerange"
+                                                v-text="d.timerange">
+                                            </div>
+                                            <div class="activity">
+                                                <ul>
+                                                    <li
+                                                        v-if="d.activities && d.activities.length"
+                                                        v-for="(a, j) in d.activities" :key="j"
+                                                        v-html="a">
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -701,337 +741,38 @@
                 data-paroller-factor-md="0.01"
                 data-paroller-factor-xs="0.01">
             </div>
-            <div class="container"></div>
+            <div class="container pr-0 pl-0"></div>
         </div>
         <div
             id="work"
             class="content bg-silver-lighter"
             data-scrollview="true">
-            <div class="container">
+            <div class="container pr-0 pl-0">
                 <h2 class="content-title">Gallery Last year</h2>
-                <div class="row row-space-10">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event1.jpg"
-                                    alt="picture 1"
-                                />
+                <div
+                    class="row row-space-10"
+                    data-toggle="modal"
+                    data-target="#pictures-event">
+                    @{ 
+                        j = 0;
+                    }
+                    @for (i = 1; i <= numberOfPictureEvent; i++) {
+                        <div class="col-md-3 col-sm-6">
+                            <div class="work">
+                                <div class="image">
+                                    <img
+                                        src=@(pictureEventFilePath + "/" + eventLastYear + "/event" + @i + ".jpg")
+                                        alt="picture @i"
+                                        data-target="#picture-event"
+                                        data-slide-to="@j"
+                                    />
+                                    <div class="eventname">MUIN@(eventLastYear)</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="..//assets/img/work/2018/event2.jpg"
-                                    alt="picture 2"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event3.jpg"
-                                    alt="picture 3"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event4.jpg"
-                                    alt="picture 4"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-space-10">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event5.jpg"
-                                    alt="picture 5"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event6.jpg"
-                                    alt="picture 6"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                     src="../assets/img/work/2018/event7.jpg"
-                                     alt="picture 7"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event8.jpg"
-                                    alt="picture 8"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event9.jpg"
-                                    alt="picture 9"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event10.jpg"
-                                    alt="picture 10"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                         <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event11.jpg"
-                                    alt="picture 11"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event12.jpg"
-                                    alt="picture 12"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event13.jpg"
-                                    alt="picture 13"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event14.jpg"
-                                    alt="picture 14"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event15.jpg"
-                                    alt="picture 15"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event16.jpg"
-                                    alt="picture 16"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event17.jpg"
-                                    alt="picture 17"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event18.jpg"
-                                    alt="picture 18"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event19.jpg"
-                                    alt="picture 19"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event20.jpg"
-                                    alt="picture 20"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event21.jpg"
-                                    alt="picture 21"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event22.jpg"
-                                    alt="picture 22"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event23.jpg"
-                                    alt="picture 23"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event24.jpg"
-                                    alt="picture 24"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event25.jpg"
-                                    alt="picture 25"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event26.jpg"
-                                    alt="picture 26"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event27.jpg"
-                                    alt="picture 27"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event28.jpg"
-                                    alt="picture 28"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event29.jpg"
-                                    alt="picture 29"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event30.jpg"
-                                    alt="picture 30"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event31.jpg"
-                                    alt="picture 31"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="work">
-                            <div class="image">
-                                <img
-                                    src="../assets/img/work/2018/event32.jpg"
-                                    alt="picture 32"
-                                />
-                            </div>
-                        </div>
-                    </div>
+
+                        j++;
+                    }
                 </div>
             </div>
         </div>
@@ -1051,43 +792,57 @@
             id="contact"
             class="content bg-silver-lighter"
             data-scrollview="true">
-            <div class="container">
+            <div class="container pr-0 pl-0">
                 <h2 class="content-title">Contact Us</h2>
                 <div class="row">
                     <div class="col-md-6">
-                        <p>
-                            <strong style="font-size: 14px">Naowarat Imjai</strong><br />
-                            International Relations and Corporate Communication Section<br />
-                            Faculty of Graduate Studies<br />
-                        </p>
-                        <p>
-                            <span class="phone">
-                                <i class="fa fa-phone-square"></i> 02-441-4125 #133,134
-                            </span>
-                            <br />
-                            <i class="fa fa-envelope"></i>&nbsp;
-                            <a
-                                class="text-blue"
-                                href="mailto:naowarat.imj@mahidol.ac.th"
-                                target="_blank">
-                                naowarat.imj@mahidol.ac.th
-                            </a>
-                        </p>
+                        <!--
+                        <div
+                            v-if="openSeasons && openSeasons.length"
+                            v-for="(o,i) in openSeasons" :key="i">
+                            <p>
+                                <strong
+                                    style="font-size: 14px"
+                                    v-text="o.contactNameEN">
+                                </strong>
+                                <br />
+                                International Relations and Corporate Communication Section
+                                <br />
+                                Faculty of Graduate Studies
+                                <br />
+                            </p>
+                            <p>
+                                <i class="fa fa-phone-square"></i>&nbsp;
+                                <span
+                                    class="phone"
+                                    v-text="o.contactPhone">
+                                </span>
+                                <br />
+                                <i class="fa fa-envelope"></i>&nbsp;
+                                <a
+                                    class="text-blue"
+                                    href="mailto:naowarat.imj@mahidol.ac.th"
+                                    target="_blank"
+                                    v-text="o.contactMail">
+                                </a>
+                            </p>
+                        </div>
                         <hr />
+                        -->
                         <p>
                             <strong style="font-size: 14px">International Relations Division Office</strong><br />
                             4<sup>th</sup> Floor, Office of the President Building<br />
                         </p>
                         <p>
                             <span class="phone">
-                                <i class="fa fa-phone-square"></i> 66 (0) 2849-6231-3, 66 (0) 2849-6235-6
+                                <i class="fa fa-phone-square"></i>&nbsp;
+                                66 (0) 2849-6231-3, 66 (0) 2849-6235-6
                             </span>
                             <br />
                             <i class="fa fa-envelope"></i>&nbsp;
-                            <a
-                                class="text-blue"
-                                href="mailto:opinter@mahidol.ac.th"
-                                target="_blank">
+                            <a class="text-blue"
+                               href="mailto:opinter@mahidol.ac.th"
+                               target="_blank">
                                 opinter@mahidol.ac.th
                             </a>
                         </p>
@@ -1149,31 +904,161 @@
         </div>
         @RenderPage("~/Shared/_Footer.cshtml")
     </div>
+    <div
+        id="pictures-event"
+        class="modal-image modal fade"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true">
+        <div
+            class="modal-dialog"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button
+                        type="button"
+                        class="modal-close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                        <span class="close">x</span>
+                    </button>
+                    <div class="carousel-control">
+                        <a
+                            class="carousel-control-prev"
+                            href="#picture-event"
+                            role="button"
+                            data-slide="prev">
+                            <span
+                                class="carousel-control-prev-icon"
+                                aria-hidden="true">
+                            </span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a
+                            class="carousel-control-next"
+                            href="#picture-event"
+                            role="button"
+                            data-slide="next">
+                            <span
+                                class="carousel-control-next-icon"
+                                aria-hidden="true">
+                            </span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div
+                        id="picture-event"
+                        class="carousel slide m-auto"
+                        data-ride="carousel"
+                        data-interval="false">
+                        <div class="carousel-inner d-inline-block align-middle">
+                            @for (i = 1; i <= numberOfPictureEvent; i++) {
+                                isActived = false;
+
+                                if (i == 1) {
+                                    isActived = true;
+                                }
+
+                                <div class="carousel-item @(isActived == true ? "active" : "")">
+                                    <div
+                                        class="img"
+                                        style="background-image: url(@(pictureEventFilePath + "/" + eventLastYear + "/event" + @i + ".jpg"))">
+                                    </div>
+                                    <div class="eventname">MUIN@(eventLastYear)</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+        id="picture-poster"
+        class="modal-image modal fade"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true">
+        <div
+            class="modal-dialog"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button
+                        type="button"
+                        class="modal-close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                        <span class="close">x</span>
+                    </button>                    
+                </div>
+                <div class="modal-body">
+                    <div
+                        class="carousel slide m-auto"
+                        data-ride="carousel"
+                        data-interval="false">
+                        <div class="carousel-inner d-inline-block align-middle">
+                            <div class="carousel-item active">
+                                <div
+                                    class="img"
+                                    style="background-image: url('../assets/img/bg/poster.png');">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-<script type="text/javascript">
-    $("html, body").animate({
-        scrollTop: 0
-    }, 500);
-
-    document.addEventListener("click", function (e) {
-        if (document.activeElement.toString() === "[object HTMLButtonElement]")
-            e.target.blur();
-    });
-
-    var headerHeight = parseInt($("#header").height());
-
-    $(".home-content").css({
-        "margin-top": ((headerHeight + 30) + "px")
-    });
-    
-    $(window).resize(function () {
-        headerHeight = parseInt($("#header").height());
-
-        $(".home-content").css({
-            "margin-top": ((headerHeight + 30) + "px")
-        });        
-    });
-</script>
 <script src="~/connection.js"></script>
 <script src="~/start/index.js"></script>
+<script type="text/javascript">
+    function doResize() {
+        $(".home-content").css({
+            "margin-top": (($("#header").height() + 30) + "px")
+        });
+
+        $("#home .content-bg").css({
+            "margin-top": ($("#header").height() + "px")
+        });
+
+        $(".modal-image .modal-dialog").css({
+            "height": ($(window).height() + "px")
+        });
+
+        $(".modal-image .carousel-item .img").css({
+            "height": ($(window).height() + "px")
+        });
+    }
+
+    function doShowPoster() {
+        $("#picture-poster").modal("show");
+    }
+
+    function doOnInit() {
+        $("html, body").animate({
+            scrollTop: 0
+        }, 500);
+
+        document.addEventListener("click", function (e) {
+            if (document.activeElement.toString() === "[object HTMLButtonElement]")
+                e.target.blur();
+        });
+
+        jQuery.fn.dataTableExt.pager.numbers_length = 6;
+
+        doResize();
+    }
+
+    $(window).resize(function () {
+        doResize();
+    });
+
+    window.onload = function () {
+        doOnInit();
+    };
+</script>

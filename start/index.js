@@ -67,12 +67,16 @@ var app = new Vue({
         countries: [],
         profiles: [],
         openSeasons: [],
-        openSeason: 0
+        openSeason: 0,
+        registrationOpenStatus: "",
+        eventInfo: {}
     },
     methods: {
         OpenDateFromServer(data) {
             this.openSeasons = data;
             this.openSeason = (this.openSeasons && this.openSeasons.length ? this.openSeasons[0].openSeason : 0);
+            this.registrationOpenStatus = (this.openSeasons && this.openSeasons.length ? this.openSeasons[0].registrationOpenStatus : "Close");
+            this.eventInfo = (this.openSeasons && this.openSeasons.length ? JSON.parse(this.openSeasons[0].eventInfo) : null);
         },
         ConnectFromServer(data) {
             this.connect.class = (data ? "fg-emerald" : "fg-gray");
@@ -248,7 +252,7 @@ var app = new Vue({
         },
         RegisterFromServer(data) {
             this.profiles = data;
-
+            
             if (this.profiles) {
                 this.modalMessage("Completed", ("Registration Code : " + this.profiles[0].runningCode + (this.isAdd ? (", send to your mail.") : "") + "\nPlease use it to register at the venue on " + this.openSeasons[0].livedate), "success", "btn btn-success", "Create QR Code").then(() => {
                     this.isAdd = false;
@@ -308,6 +312,8 @@ var app = new Vue({
                     title: titles,
                     text: texts,
                     icon: icons,
+                    closeOnClickOutside: true,
+                    closeOnEsc: true,
                     buttons: {
                         confirm: {
                             text: (!btntext ? "OK" : btntext),
@@ -331,6 +337,8 @@ var app = new Vue({
                     title: titles,
                     text: texts,
                     icon: icons,
+                    closeOnClickOutside: true,
+                    closeOnEsc: true,
                     buttons: {
                         confirm: {
                             text: "OK",
@@ -419,7 +427,8 @@ var app = new Vue({
         },
         createQrcode() {
             this.registerCode = (this.cleanThaiText(this.registerCode) ? this.cleanThaiText(this.registerCode).trim() : '');
-            
+            $("#registercode").val("");
+
             if (this.registerCode) {
                 $("#qrcodex").empty();
                 $("#qrcodex").qrcode({
@@ -447,19 +456,36 @@ var app = new Vue({
                 paging: true,
                 searching: true,
                 destroy: true,
-                columns: [{
-                    data: "rn"
-                }, {
-                    data: "totaltitle",
-                    className: "d-none d-sm-table-cell"
-                }, {
-                    data: "fullname"
-                }, {
-                    data: "countryNameEN"
-                }, {
-                    data: "createdatex",
-                    className: "d-none d-sm-table-cell"
-                }]
+                language: {
+                    "search": "<i class='fa fa-search' aria-hidden='true'></i>",
+                    "paginate": {
+                        "previous": "<i class='fas fa-angle-left' aria-hidden='true'></i>",
+                        "next": "<i class='fas fa-angle-right' aria-hidden='true'></i>"
+                    }
+                },
+                columns: [
+                    {
+                        data: "rn"
+                    },
+                    {
+                        data: "totaltitle",
+                        className: "d-none d-sm-table-cell"
+                    },
+                    {
+                        data: "fullname"
+                    },
+                    {
+                        data: "countryNameEN",
+                        className: "col4"
+                    },
+                    {
+                        data: "createdatex",
+                        className: "d-none d-sm-table-cell"
+                    }
+                ],
+                initComplete: function () {
+                    $(this).removeClass("d-none");
+                }
             });
         },
         onEnter(e) {
@@ -513,7 +539,7 @@ var app = new Vue({
         autoQrCodeButton() {
             if (this.registerCode.length > 0)
                 $("#qrcodex").empty();
-
+            
             if ($("#registercode").val()) {
                 this.modalMessage("QR Code", ("Registration Code : " + this.registerCode), "info", "btn btn-info", "Create QR Code").then(() => {
                     $("#qrcode-link").click();
@@ -523,7 +549,7 @@ var app = new Vue({
                     }, 500);
                 });
             }
-
+            
             return (this.registerCode && this.registerCode.length >= 4 ? false : true);
         }
     }

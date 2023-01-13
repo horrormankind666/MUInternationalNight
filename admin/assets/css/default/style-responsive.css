@@ -1253,7 +1253,9 @@ Website: http://www.seantheme.com/color-admin-v4.2/admin/
 		padding-top: 0 !important;
 	}
 	div.dataTables_wrapper div.dataTables_paginate {
+		/*
 		margin: 10px 20px 0 !important;
+		*/
 		text-align: center;
 	}
 	div.dataTables_wrapper div.dataTables_paginate .pagination {

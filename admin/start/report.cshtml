@@ -1,48 +1,105 @@
-﻿<h1 class="page-header"><i class="fa fa-table"></i> Report</h1>
-
-<div class="row">
-    <div class="col-md-8">        
+﻿<div id="report">
+    <h1 class="page-header">
+        <i class="fa fa-table"></i>
+        Report
+    </h1>
+    <div class="select-year form-group d-table w-100 mb-2">
+        <div class="d-table-cell text-right">
+            <label class="col-form-label font-14 font-weight-normal">
+                Select year
+            </label>
+        </div>
+        <div class="d-table-cell pl-2">
+            <select
+                class="form-control"
+                v-on:change="yearRegisteredChange"
+                v-model="yearRegisteredDefault">
+                <option
+                    v-if="
+                        yearRegistered &&
+                        yearRegistered.length
+                    "
+                    v-for="(y,i) in yearRegistered" :key="i"
+                    v-text="y.yearRegistered">
+                </option>
+            </select>
+        </div>
     </div>
-    <div class="col-md-4">
-        <div class="form-group row">
-            <label class="col-form-label col-md-5 text-right">Select year</label>
-            <div class="col-md-7">
-                <select class="form-control" v-on:change="yearRegisteredChange" v-model="yearRegisteredDefault">
-                    <option v-if="yearRegistered && yearRegistered.length" v-for="(y,i) in yearRegistered" :key="i" v-text="y.yearRegistered"></option>
-                </select>
+    <div
+        id="report"
+        class="panel panel-inverse">
+        <div class="panel-heading">
+            <div class="panel-heading-btn">
+                <a
+                    class="btn btn-xs btn-icon btn-circle btn-default"
+                    href="javascript:void(0);"
+                    data-click="panel-expand">
+                    <i class="fa fa-expand"></i>
+                </a>
+                <a                
+                    class="btn btn-xs btn-icon btn-circle btn-success"
+                    href="javascript:void(0);"
+                    data-click="panel-reload">
+                    <i class="fa fa-redo"></i>
+                </a>
+                <a
+                    href="javascript:void(0);"
+                    class="btn btn-xs btn-icon btn-circle btn-warning"
+                    data-click="panel-collapse">
+                    <i class="fa fa-minus"></i>
+                </a>
             </div>
+            <h4 class="panel-title font-14">
+                Registration Year
+                <span
+                    class="text-teal"
+                    v-text="yearRegisteredDefault">
+                </span>
+            </h4>
         </div>
-    </div>
-</div>
-
-<div id="report" class="panel panel-inverse">
-    <div class="panel-heading">
-        <div class="panel-heading-btn">
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+        <div class="panel-body d-none">
+            <table
+                id="table_id"
+                class="display table table-striped table-bordered w-100">
+                <thead>
+                    <tr>
+                        <th class="col1">
+                            Reg.Code
+                        </th>
+                        <th class="col2">
+                            Degree
+                        </th>
+                        <th class="col3">
+                            Full Name
+                        </th>
+                        <th class="col4">
+                            Country
+                        </th>
+                        <th class="col5">
+                            Status
+                        </th>
+                        <th class="col6">
+                            Approve
+                        </th>
+                        <th class="col7">
+                            Email
+                        </th>
+                        <th class="col8">
+                            Registered
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-        <h4 class="panel-title font-14">Registration Year <span class="text-teal" v-text="yearRegisteredDefault"></span></h4>
-    </div>
-    <div class="panel-body">
-        <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Degree</th>
-                    <th>Title</th>
-                    <th>Fullname</th>
-                    <th>Country</th>
-                    <th>Status</th>
-                    <th>Approve</th>
-                    <th>Email</th>
-                    <th>Registered</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <div class="panel-footer">
-        <a :href="labels.excellink" target="_blank" class="btn btn-green swal-button"><i class="fa fa-file-excel"></i> Download Excel</a>
+        <div class="panel-footer text-center d-none">
+            <a
+                class="btn btn-green swal-button"
+                :href="labels.excellink"
+                target="_blank">
+                <i class="fa fa-file-excel"></i>
+                Download Excel
+            </a>
+        </div>
     </div>
 </div>

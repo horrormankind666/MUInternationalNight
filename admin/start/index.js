@@ -37,10 +37,11 @@
     mounted() {
     },
     methods: {
-        CurrentyearFromServer(data) { this.labels.currentyear = data; },
+        CurrentyearFromServer(data) {
+            this.labels.currentyear = data;
+        },
         setActiveMenu(data) {
-            switch (data)
-            {
+            switch (data) {
                 case "approve": {
                     this.contents.approve = true;
                     this.contents.report = false;
@@ -57,14 +58,18 @@
             }
             this.activeMenu = data;
         },
-        isActiveMenu(data) { return this.activeMenu === data; },
-        CounterApprovedFromServer(data) { this.connect.approved = data[0].total; },
+        isActiveMenu(data) {
+            return this.activeMenu === data;
+        },
+        CounterApprovedFromServer(data) {
+            this.connect.approved = data[0].total;
+        },
         SearchApproveFromCode(data) {
             this.profiles = data;
             this.panels.approve = (this.profiles && this.profiles.length ? false : true);
 
-            if (this.profiles && this.profiles.length)
-            {
+            if (this.profiles &&
+                this.profiles.length) {
                 this.disableds.approve = (this.profiles[0].approve === "Y" ? true : false);
                 this.labels.approve = (this.profiles[0].approve === "Y" ? "APPROVED" : "APPROVE");
                 this.coupons = this.profiles[0].coupon;
@@ -78,7 +83,12 @@
             else
                 this.modalMessage("Require", "Registration Code", "warning", "btn btn-warning");
         },
-        modalMessage(titles, texts, icons, btns) {
+        modalMessage(
+            titles,
+            texts,
+            icons,
+            btns
+        ) {
             return new Promise(resolve => {
                 swal({
                     title: titles,
@@ -98,7 +108,11 @@
                 });
             });
         },
-        modalConfirm(titles, texts, icons) {
+        modalConfirm(
+            titles,
+            texts,
+            icons
+        ) {
             return new Promise(resolve => {
                 swal({
                     title: titles,
@@ -137,10 +151,11 @@
             let username = document.getElementById("username").innerText;
 
             this.modalConfirm("Confirm Approve", ("Do you want to approve " + "registration code : " + registrationCode + " ?"), "warning").then(result => {
-                if (result)
-                {
-                    if (registrationCode && username && this.labels.currentyear)
-                    {
+                if (result) {
+                    if (registrationCode &&
+                        username &&
+                        this.labels.currentyear
+                    ) {
                         this.disableds.approve = true;
                         muinternightHub.server.approveToServer(registrationCode, username, ("muin" + this.labels.currentyear));
                         this.modalMessage("Approved", ("Registration Code : " + registrationCode), "success", "btn btn-success");
@@ -155,40 +170,58 @@
         RegisteredTableExcelFromServer(data) {
             $('#table_id').DataTable({
                 data: data,
-                order: [[8, "desc"]],
+                order: [[7, "desc"]],
                 lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
                 pageLength: 25,
                 paging: true,
                 searching: true,
                 destroy: true,
-                columns: [{
-                    data: "registerCode"
-                }, {
-                    data: "studentDegree"
+                language: {
+                    "search": "<i class='fa fa-search' aria-hidden='true'></i>",
+                    "paginate": {
+                        "previous": "<i class='fas fa-angle-left' aria-hidden='true'></i>",
+                        "next": "<i class='fas fa-angle-right' aria-hidden='true'></i>"
+                    }
                 },
-                {
-                    data: "totaltitle"
-                },
-                {
-                    data: "fullname"
-                },
-                {
-                    data: "country"
-                },
-                {
-                    data: "statusMU"
-                },
-                {
-                    data: "approve",
-                    render: ((a) => a === "Yes" ? "<div class='text-center'><i class='fa fa-check text-green'></i></div>" : "<div class='text-center'><i class='fa fa-times text-red text-center'></i></div>")
-                },
-                {
-                    data: "email"
-                },
-                {
-                    data: "createDates",
-                    width: "10%"
-                }]
+                columns: [
+                    {
+                        data: "registerCode",
+                        className: "col1"
+                    },
+                    {
+                        data: "studentDegree",
+                        className: "col2"
+                    }, 
+                    {
+                        data: "fullname",
+                        className: "col3"
+                    },
+                    {
+                        data: "country",
+                        className: "col4"
+                    },
+                    {
+                        data: "statusMU",
+                        className: "col5"
+                    },
+                    {
+                        data: "approve",
+                        render: ((a) => a === "Yes" ? "<div class='text-center'><i class='fa fa-check text-green'></i></div>" : "<div class='text-center'><i class='fa fa-times text-red text-center'></i></div>"),
+                        className: "col6"
+                    },
+                    {
+                        data: "email",
+                        className: "col7"
+                    },
+                    {
+                        data: "createDates",
+                        className: "col8"
+                    }
+                ],
+                initComplete: function () {
+                    $(this).wrap("<div class='table-responsive'></div>");
+                    $("#report .panel-body, #report .panel-footer").removeClass("d-none");
+                }
             });
         },
         YearRegistrationFromServer(data) {

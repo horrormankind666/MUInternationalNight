@@ -32,6 +32,7 @@ public class MuinternightHub: Hub {
 
     public readonly CommandType proc = CommandType.StoredProcedure;
     public readonly CommandType texts = CommandType.Text;
+    private static int eventYear = 2023;
     private static int user = 0;
 
     #endregion ค่าเริ่มต้น
@@ -40,7 +41,7 @@ public class MuinternightHub: Hub {
 
     public override Task OnConnected() {
         user++;
-        Clients.All.ConnectFromServer(string.Format("Online"));
+        Clients.All.ConnectFromServer(String.Format("Online"));
 
         return base.OnConnected();
     }
@@ -50,11 +51,11 @@ public class MuinternightHub: Hub {
         user = (user < 2 ? 1 : user--);
 
         if (stopCalled)  {
-            Clients.Caller.ConnectFromServer(string.Format("Explicitly"));
+            Clients.Caller.ConnectFromServer(String.Format("Explicitly"));
             Clients.All.OnlineUserFromServer(user);
         }
         else {
-            Clients.Caller.ConnectFromServer(string.Format("Timeout"));
+            Clients.Caller.ConnectFromServer(String.Format("Timeout"));
             Clients.All.OnlineUserFromServer(user);
         }
 
@@ -62,7 +63,7 @@ public class MuinternightHub: Hub {
     }
 
     public override Task OnReconnected() {
-        Clients.Caller.ConnectFromServer(string.Format("Online"));
+        Clients.Caller.ConnectFromServer(String.Format("Online"));
 
         return base.OnReconnected();
     }
@@ -88,7 +89,7 @@ public class MuinternightHub: Hub {
     }
 
     public void CurrentyearToServer() {
-        Clients.Caller.CurrentyearFromServer(DateTime.Now.Year);
+        Clients.Caller.CurrentyearFromServer(eventYear);
     }
 
     #endregion server time
@@ -100,7 +101,7 @@ public class MuinternightHub: Hub {
     */
     public void OpenDateToServer() {
         Querys = @"sp_GetRegisterDateInternight";
-        Dappers = (Db.QueryAsync<dynamic>(Querys, commandType: proc)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear }, commandType: proc)).Result;
         Clients.Caller.OpenDateFromServer(Dappers);
     }
 
@@ -143,7 +144,7 @@ public class MuinternightHub: Hub {
     public void LimitThaiPeopleToServer() {
         Querys = (
             @"
-            declare @opendate datetime = (select top 1 opendate from interconfig where (eventtype = 'Internight') order by Years desc)
+            declare @opendate datetime = (select top 1 opendate from interconfig where (eventtype = 'Internight') and (Years = @eventYear) order by Years desc)
 
             select  (150 - count(*)) as total
             from    international
@@ -151,7 +152,7 @@ public class MuinternightHub: Hub {
                     (country = 217)
             "
         );
-        Dappers = (Db.QueryAsync<dynamic>(Querys, commandType: texts)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear }, commandType: texts)).Result;
         Clients.All.LimitThaiPeopleFromServer(Dappers);
     }
 
@@ -165,7 +166,7 @@ public class MuinternightHub: Hub {
         string livedate = string.Empty, location = string.Empty;
 
         Querys = @"sp_GetRegisterDateInternight";
-        Dappers = (Db.QueryAsync<dynamic>(Querys, commandType: proc)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear }, commandType: proc)).Result;
 
         if (Dappers.Count > 0) {
             livedate = Dappers[0].livedate;
@@ -178,6 +179,7 @@ public class MuinternightHub: Hub {
             profiles = JsonConvert.DeserializeObject<Profile>(data);
             Querys = "sp_SetRegistrationInternight";
             Dappers = (Db.QueryAsync<dynamic>(Querys, new {
+                eventYear,
                 profiles.IdCard,
                 profiles.TitleName,
                 profiles.TitleNameOther,
@@ -204,14 +206,14 @@ public class MuinternightHub: Hub {
             */
             string title = !string.IsNullOrEmpty(profiles.TitleNameOther) ? profiles.TitleNameOther : profiles.TitleName;
             string middlename = !string.IsNullOrEmpty(profiles.MiddleName) ? profiles.MiddleName : " ";
-            string fullName = string.Format("{0} {1}{2}{3}", title, profiles.Firstname, middlename, profiles.Lastname);
+            string fullName = String.Format("{0} {1}{2}{3}", title, profiles.Firstname, middlename, profiles.Lastname);
 
             /*
             ส่งเมล์เฉพาะครั้งแรกที่ ลงทะเบียน
             */
             if (!string.IsNullOrEmpty(Dappers[0].runningCode) &&
                 Dappers[0].found.Equals(0))
-                SendEmailActivate(Dappers[0].runningCode, Dappers[0].years, fullName, profiles.Email, livedate, location);
+                SendEmailActivate(Dappers[0].runningCode, eventYear.ToString(), fullName, profiles.Email, livedate, location);
 
             Clients.Caller.RegisterFromServer(Dappers);
             LimitThaiPeopleToServer();
@@ -248,8 +250,8 @@ public class MuinternightHub: Hub {
         */
         Querys = (
             @"
-            declare @opendate datetime = (select top 1 opendate from InterConfig where (eventtype = 'Internight') order by Years desc);
-            declare @closedate datetime = (select top 1 dateadd(day, 1, ondate) from InterConfig where (eventtype = 'Internight') order by Years desc);
+            declare @opendate datetime = (select top 1 opendate from InterConfig where (eventtype = 'Internight') and (Years = @eventYear) order by Years desc);
+            declare @closedate datetime = (select top 1 dateadd(day, 1, ondate) from InterConfig where (eventtype = 'Internight') and (Years = @eventYear) order by Years desc);
                     
             select   a.runningCode as rn,
                      (case when a.titlename != 'Other' then a.titlename else a.titleNameOther end) as totaltitle,
@@ -264,7 +266,8 @@ public class MuinternightHub: Hub {
             order by a.createdate desc
             "
         );
-        Dappers = (Db.QueryAsync<dynamic>(Querys, commandType: texts)).Result;
+
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear }, commandType: texts)).Result;
         Clients.All.RegisteredTableFromServer(Dappers);
     }
 
@@ -273,7 +276,7 @@ public class MuinternightHub: Hub {
     */
     public void SearchStudentCodeToServer(string studentCode) {
         Querys = @"sp_GetStudentProfile";
-        Dappers = (Db.QueryAsync<dynamic>(Querys, new { studentCode }, commandType: proc)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear, studentCode }, commandType: proc)).Result;
         Clients.Caller.SearchStudentCodeFromServer(Dappers);
     }
 
@@ -319,53 +322,55 @@ public class MuinternightHub: Hub {
     ) {
         string body = string.Empty;
 
-        body += string.Format("<div style='border:1px solid #52a6f9;padding: 10px; background-color: #e8f1f9; border-radius: 10px;'>");
-        body += string.Format("<h2><u style='color:#363F9C'>Mahidol University International Night</u>&nbsp;</h2>");
-        body += string.Format("&#128515; <b>Dear</b> {0} ", fullName);
-        body += string.Format("<br>");
-        body += string.Format("<br>");
-        body += string.Format("<span style='color:#1A6600'>");
-        body += string.Format("<div>");
-        body += string.Format("<b>Thank you for your registration ");
-        body += string.Format("to attend Mahidol University International Night {0}.</b>", years);
-        body += string.Format("</div>");
-        body += string.Format("<br>");
-        body += string.Format("<div style='color:red'>Please use the “Registration Code” and “QR Code” sent to your email to register at the venue on <b>{0}</b>.</div>", livedate);
-        //body += string.Format("<br>");
-        //body += string.Format("<br>");
-        //body += string.Format("<div><b style='color:black'>We invite you to wear your national dress and be apart of the Mr. and Miss International Night Contest.</b></div>");
-        //body += string.Format("<br>");
-        //body += string.Format("<br>");
-        //body += string.Format("&#128353; Please use the registration code to register at the venue  <b>{0}</b>", livedate);
-        body += string.Format("<br>");
-        body += string.Format("<b>Location</b> {0} <b><a target='_blank' href='https://www.google.com/maps/place/%E0%B8%84%E0%B8%93%E0%B8%B0%E0%B8%A8%E0%B8%B4%E0%B8%A5%E0%B8%9B%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C/@13.7961807,100.3211662,17.44z/data=!4m5!3m4!1s0x30e2938bb44e1dad:0x39ca370247bf6f24!8m2!3d13.7973142!4d100.3212985'>View Google Map</a></b>", location);
-        body += string.Format("</span>");
-        body += string.Format("<br>");        
-        body += string.Format("<br>");
-        body += string.Format("<br>");
-        body += string.Format("<div style='border:1px solid #000000;background-color: #ffffff; padding: 1em 2em 1em 2em; border-radius: 10px;'>");
-        body += string.Format("<br>");
-        body += string.Format("<div style='font-size:20px'>&#128073; <b style='color:#960000'>Registration Code : </b> {0}</div>", registrationCode);
-        body += string.Format("<div style='font-size:20px'>&#128073; <b style='color:#960000'>Your QR Code Link : </b>");
-        body += string.Format("<a target='_blank' href='https://smartedu.mahidol.ac.th/MuInternight/start/index.cshtml?qr={0}'>QR Code</a></div>", registrationCode);
-        body += string.Format("<br>");
-        body += string.Format("</div>");
-        body += string.Format("<br>");
-        body += string.Format("<br>");
-        body += string.Format("<img src='https://smartedu.mahidol.ac.th/muinternight/assets/img/bg/poster.jpg' style='background-color:#af952a; width:77%;height:auto;display: block;margin-left: auto;margin-right: auto;border:1px solid #333; border-radius: 5px;padding: 3px;'>");
-        body += string.Format("<br>");
+        body += String.Format("<div style='border:1px solid #52a6f9;padding: 10px; background-color: #e8f1f9; border-radius: 10px;'>");
+        body += String.Format("<h2><u style='color:#363F9C'>Mahidol University International Night</u>&nbsp;</h2>");
+        body += String.Format("&#128515; <b>Dear</b> {0} ", fullName);
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<span style='color:#1A6600'>");
+        body += String.Format("<div>");
+        body += String.Format("<b>Thank you for your registration ");
+        body += String.Format("to attend Mahidol University International Night {0}.</b>", years);
+        body += String.Format("</div>");
+        body += String.Format("<br>");
+        body += String.Format("<div style='color:red'>Please use the “Registration Code” and “QR Code” sent to your email to register at the venue on <b>{0}</b>.</div>", livedate);
+        /*
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<div><b style='color:black'>We invite you to wear your national dress and be apart of the Mr. and Miss International Night Contest.</b></div>");
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("&#128353; Please use the registration code to register at the venue  <b>{0}</b>", livedate);
+        */
+        body += String.Format("<br>");
+        body += String.Format("<b>Location</b> {0} <b><a target='_blank' href='https://www.google.com/maps/place/%E0%B8%84%E0%B8%93%E0%B8%B0%E0%B8%A8%E0%B8%B4%E0%B8%A5%E0%B8%9B%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C/@13.7961807,100.3211662,17.44z/data=!4m5!3m4!1s0x30e2938bb44e1dad:0x39ca370247bf6f24!8m2!3d13.7973142!4d100.3212985'>View Google Map</a></b>", location);
+        body += String.Format("</span>");
+        body += String.Format("<br>");        
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<div style='border:1px solid #000000;background-color: #ffffff; padding: 1em 2em 1em 2em; border-radius: 10px;'>");
+        body += String.Format("<br>");
+        body += String.Format("<div style='font-size:20px'>&#128073; <b style='color:#960000'>Registration Code : </b> {0}</div>", registrationCode);
+        body += String.Format("<div style='font-size:20px'>&#128073; <b style='color:#960000'>Your QR Code Link : </b>");
+        body += String.Format("<a target='_blank' href='https://smartedu.mahidol.ac.th/MuInternight/start/index.cshtml?qr={0}'>QR Code</a></div>", registrationCode);
+        body += String.Format("<br>");
+        body += String.Format("</div>");
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<img src='https://smartedu.mahidol.ac.th/muinternight/assets/img/bg/poster.png' style='background-color:#af952a; width:77%;height:auto;display: block;margin-left: auto;margin-right: auto;border:1px solid #333; border-radius: 5px;padding: 3px;'>");
+        body += String.Format("<br>");
 
-        body += string.Format("<span style='color:#363F9C'>Best Regards</span>");
-        body += string.Format("<br>");
-        body += string.Format("<br>");
-        body += string.Format("<br>Mahidol University Internaitonal Night Staff");
-        body += string.Format("<br>");
-        body += string.Format("<br>");
-        body += string.Format("<hr>");
-        body += string.Format("<b style='color:#a86030'>This is an automated message, Please do not reply direct to this mail</b><br>");
-        body += string.Format("<b style='color:#2c9943'><a target='_blank' href='https://smartedu.mahidol.ac.th/muinternight/start/index.cshtml'>Website: Mahidol University International Night</a></b><br>");
-        body += string.Format("<br>");
-        body += string.Format("</div>");
+        body += String.Format("<span style='color:#363F9C'>Best Regards</span>");
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<br>Mahidol University Internaitonal Night Staff");
+        body += String.Format("<br>");
+        body += String.Format("<br>");
+        body += String.Format("<hr>");
+        body += String.Format("<b style='color:#a86030'>This is an automated message, Please do not reply direct to this mail</b><br>");
+        body += String.Format("<b style='color:#2c9943'><a target='_blank' href='https://smartedu.mahidol.ac.th/muinternight/start/index.cshtml'>Website: Mahidol University International Night</a></b><br>");
+        body += String.Format("<br>");
+        body += String.Format("</div>");
 
         return body;
     }
@@ -417,7 +422,7 @@ public class MuinternightHub: Hub {
     */
     public void SearchForApproveToServer(string registrationCode) {
         Querys = @"sp_GetRegistrationProfileForApprove";
-        Dappers = (Db.QueryAsync<dynamic>(Querys, new { registrationCode }, commandType: proc)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear, registrationCode }, commandType: proc)).Result;
         Clients.Caller.SearchApproveFromCode(Dappers);
     }
 
@@ -429,12 +434,12 @@ public class MuinternightHub: Hub {
         string username,
         string password
     ) {
-        string defaultPassword = string.Format("{0}{1}", "muin", DateTime.Today.Year.ToString());
+        string defaultPassword = String.Format("{0}{1}", "muin", eventYear);
         bool approve = password.ToLower().Equals(defaultPassword) ? true : false;
         
         if (approve) {
             Querys = @"sp_SetRegistrationProfileForApprove";
-            Dappers = (Db.QueryAsync<dynamic>(Querys, new { registrationCode, username }, commandType: proc)).Result;
+            Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear, registrationCode, username }, commandType: proc)).Result;
             Clients.Caller.ApproveFromServer(Dappers);
             CounterApprovedToServer();
         }
@@ -452,10 +457,10 @@ public class MuinternightHub: Hub {
             from    international with (nolock)
             where   (eventtype = 'Internight') and
                     (approve is not null) and
-                    (year(getdate()) = year(createdate))
+                    (@eventYear = year(createdate))
             "
         );
-        Dappers = (Db.QueryAsync<dynamic>(Querys, commandType: texts)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear }, commandType: texts)).Result;
         Clients.All.CounterApprovedFromServer(Dappers);
     }
 
@@ -496,15 +501,15 @@ public class MuinternightHub: Hub {
             update international set
                 coupon = @coupon
             where   (runningCode = @runningCode) and
-                    (year(createdate) = year(getdate()))
+                    (year(createdate) = @eventYear)
             
             select  isnull(coupon, 0) as coupon
             from    international
             where   (runningCode = @runningCode) and
-                    (year(createdate) = year(getdate()))
+                    (year(createdate) = @eventYear)
             "
         );
-        Dappers = (Db.QueryAsync<dynamic>(Querys, new { runningCode, coupon }, commandType: texts)).Result;
+        Dappers = (Db.QueryAsync<dynamic>(Querys, new { eventYear, runningCode, coupon }, commandType: texts)).Result;
         Clients.Caller.CouponFromServer(Dappers);
     }
 

@@ -1,11 +1,19 @@
 ﻿<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if !IE]><!-->
+<!--
+    [if IE 8]>
+        <html lang="en" class="ie8">
+    <![endif]
+-->
+<!--
+    [if !IE]>
+<!-->
 <html lang="en">
-<!--<![endif]-->
+<!--
+    <![endif]
+-->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Mahidol International Night</title>
+    <title>Mahidol University International Night Admin</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="Mahidol University International Night" name="description" />
     <meta content="odd nopparat" name="nopparat.jap@mahidol.edu" />
@@ -13,7 +21,6 @@
     <meta name="msapplication-TileImage" content="~/assets/img/logo/logo_icon.png" />
     <link rel="apple-touch-icon-precomposed" href="~/assets/img/logo/logo_icon.png" />
     <link rel="icon" href="~/assets/img/logo/logo_icon.png">
-    <!-- ================== BEGIN BASE CSS STYLE ================== -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="~/admin/assets/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
     <link href="~/admin/assets/plugins/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
@@ -23,62 +30,87 @@
     <link href="~/admin/assets/css/default/style-responsive.min.css" rel="stylesheet" />
     <link href="~/admin/assets/css/default/theme/default.css" rel="stylesheet" id="theme" />
     <link href="~/admin/assets/css/my-style.css" rel="stylesheet" />
-    <!-- ================== END BASE CSS STYLE ================== -->
-    <!-- ================== BEGIN BASE JS ================== -->
     <script src="~/assets/plugins/pace/pace.min.js"></script>
-    <!-- ================== END BASE JS ================== -->
 </head>
 <body>
     @{
         Logins login = new Logins("STAFF");
         string currentyear = String.Empty;
 
-        if (string.IsNullOrEmpty(login.Username))
-        {
+        if (string.IsNullOrEmpty(login.Username)) {
             Response.Redirect("login.cshtml");
         }
-        else
-        {
+        else {
             currentyear = DateTime.Today.Year.ToString();
         }
     }
-    <!-- begin #page-loader -->
-    <div id="page-loader" class="fade show"><span class="spinner"></span></div>
-    <!-- end #page-loader -->
-    <!-- begin #page-container -->
-    <div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
-        <!-- begin #header -->
-        <div id="header" class="header navbar-inverse bg-mahidol-blue">
-            <!-- begin navbar-header -->
+    <div id="page-loader"
+         class="fade show">
+        <span class="spinner"></span>
+    </div>
+    <div id="page-container"
+         class="fade page-sidebar-fixed page-header-fixed">
+        <div id="header"
+             class="header navbar-inverse bg-mahidol-blue">
             <div class="navbar-header">
-                <a href="~/admin/start/index.cshtml" class="navbar-brand"><img src="~/assets/img/logo/logo_icon.png" /> <b class="text-yellow-lighter">MU InterNight @currentyear</b> Admin</a>
-                <button type="button" class="navbar-toggle btn btn-grey" data-click="sidebar-toggled">
+                <a class="navbar-brand"
+                   href="index.cshtml">
+                    <img src="../assets/img/logo/logo_icon.png" />
+                    <span class="event-name">
+                        <strong class="text-yellow-lighter">                            
+                            <span class="fullname">
+                                Mahidol University International Night
+                            </span>
+                            <span class="initialname">
+                                MUIN
+                            </span>
+                            <span v-text="labels.currentyear"></span>
+                        </strong>
+                        Admin
+                    </span>
+                </a>
+                <button type="button"
+                        class="navbar-toggle btn btn-grey d-none"
+                        data-click="sidebar-toggled">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
             </div>
-            <!-- end navbar-header -->
-            <!-- begin header-nav -->
             <ul class="navbar-nav navbar-right">
                 <!--
                 <li>
                     <div class="navbar-form">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Enter keyword" />
-                            <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter keyword"
+                            />
+                            <button
+                                type="submit"
+                                class="btn btn-search">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </div>
                     </div>
                 </li>
                 -->
                 <!--
                 <li class="dropdown">
-                    <a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14">
+                    <a
+                        class="dropdown-toggle f-s-14"
+                        href="javascript:void(00;"
+                        data-toggle="dropdown">
                         <i class="fa fa-bell"></i>
-                        <span class="label">0</span>
+                        <span class="label">
+                            0
+                        </span>
                     </a>
                     <ul class="dropdown-menu media-list dropdown-menu-right">
-                        <li class="dropdown-header">NOTIFICATIONS (0)</li>
+                        <li class="dropdown-header">
+                            NOTIFICATIONS (0)
+                        </li>
                         <li class="text-center width-300 p-b-10">
                             No notification found
                         </li>
@@ -86,38 +118,104 @@
                 </li>
                 -->
                 <li class="dropdown navbar-user">
-                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                        <div class="image image-icon bg-black text-grey-darker">
+                    <a class="dropdown-toggle"
+                       href="javascript:void(0)"
+                       data-toggle="dropdown">
+                        <div class="image image-icon bg-black text-white">
+                            @{
+                                string[] names = login.FullNameEn.Split(' ');
+                                string initialName = String.Empty;
+
+                                if (!names.Length.Equals(0))
+                                {
+                                    initialName = names[0].Substring(0, 1);
+
+                                    if (names.Length > 1)
+                                    {
+                                        initialName += names[names.Length - 1].Substring(0, 1);
+                                    }
+                                }
+                            }
+                            @initialName
+                            <!--
                             <i class="fa fa-user"></i>
+                            -->
                         </div>
-                        <span class="d-md-inline text-white" id="username">@login.FullNameEn</span> <b class="caret"></b>
+                        <!--
+                        <span
+                            id="username"
+                            class="d-md-inline text-white">
+                            @login.FullNameEn
+                        </span>
+                        -->
+                        <b class="caret"></b>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <!--
-                        <a href="javascript:;" class="dropdown-item">Edit Profile</a>
-                        <a href="javascript:;" class="dropdown-item"><span class="badge badge-danger pull-right">2</span> Inbox</a>
-                        <a href="javascript:;" class="dropdown-item">Calendar</a>
-                        <a href="javascript:;" class="dropdown-item">Setting</a>
+                        <a
+                            class="dropdown-item"
+                            href="javascript:void(0)">
+                            Edit Profile
+                        </a>
+                        <a
+                            class="dropdown-item"
+                            href="javascript:void(0)">
+                            <span class="badge badge-danger pull-right">
+                                2
+                            </span>
+                            Inbox
+                        </a>
+                        <a
+                            class="dropdown-item"
+                            href="javascript:void(0)">
+                            Calendar
+                        </a>
+                        <a
+                            class="dropdown-item"
+                            href="javascript:void(0)">
+                            Setting
+                        </a>
                         <div class="dropdown-divider"></div>
                         -->
-                        <a href="login.cshtml" class="dropdown-item">Log Out</a>
+                        <div class="dropdown-item-text">
+                            <h4 class="mb-0">
+                                <strong class="d-block text-truncate">
+                                    @login.FullNameEn
+                                </strong>
+                            </h4>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item"
+                           href="javascript:void(0)"
+                           v-on:click="setActiveMenu('approve')">
+                            Approve
+                        </a>
+                        <a class="dropdown-item"
+                           href="javascript:void(0)"
+                           v-on:click="setActiveMenu('report')">
+                            Report
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item"
+                           href="login.cshtml">
+                            Log Out
+                        </a>
                     </div>
                 </li>
             </ul>
-            <!-- end header navigation right -->
         </div>
         <div class="padding2 bg-yellow"></div>
         <div class="padding1 bg-greyer"></div>
-        <!-- end #header -->
-        <!-- begin #sidebar -->
-        <div id="sidebar" class="sidebar bg-darkCobalt">
-            <!-- begin sidebar scrollbar -->
-            <div data-scrollbar="true" data-height="100%">
-                <!-- begin sidebar user -->
+        <div id="sidebar"
+             class="sidebar bg-darkCobalt">
+            <div data-scrollbar="true"
+                 data-height="100%">
                 <!--
                 <ul class="nav">
                     <li class="nav-profile">
-                        <a href="javascript:;" data-toggle="nav-profile">
+                        <a
+                            href="javascript:;"
+                            data-toggle="nav-profile">
                             <div class="cover with-shadow"></div>
                             <div class="image image-icon bg-black text-grey-darker">
                                 <i class="fa fa-user"></i>
@@ -125,66 +223,97 @@
                             <div class="info">
                                 <b class="caret pull-right"></b>
                                 @login.FullNameEn
-                                <small>@login.DepCode</small>
+                                <small>
+                                    @login.DepCode
+                                </small>
                             </div>
                         </a>
                     </li>
                     <li>
                         <ul class="nav nav-profile">
-                            <li><a href="javascript:;"><i class="fa fa-cog"></i> Settings</a></li>
-                            <li><a href="javascript:;"><i class="fa fa-pencil-alt"></i> Send Feedback</a></li>
-                            <li><a href="javascript:;"><i class="fa fa-question-circle"></i> Helps</a></li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="fa fa-cog"></i>
+                                    Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="fa fa-pencil-alt"></i>
+                                    Send Feedback
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="fa fa-question-circle"></i>
+                                    Helps
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
                 -->
-                <!-- end sidebar user -->
-                <!-- begin sidebar nav -->
                 <div class="padding1 bg-darkBlue"></div>
                 <ul class="nav">
-                    <!--<li class="nav-header">Navigation</li>-->
+                    <!--
+                    <li class="nav-header">
+                        Navigation
+                    </li>
+                    -->
                     <li v-bind:class="{ active: isActiveMenu('approve') }">
-                        <a href="#" v-on:click="setActiveMenu('approve')">
+                        <a href="#"
+                           v-on:click="setActiveMenu('approve')">
                             <i class="fa fa-check"></i>
-                            <span class="font-14">Approve</span>
+                            <span class="font-14">
+                                Approve
+                            </span>
                         </a>
                     </li>
                     <li v-bind:class="{ active: isActiveMenu('report') }">
-                        <a href="#" v-on:click="setActiveMenu('report')">
+                        <a href="#"
+                           v-on:click="setActiveMenu('report')">
                             <i class="fa fa-table"></i>
-                            <span class="font-14">Report</span>
+                            <span class="font-14">
+                                Report
+                            </span>
                         </a>
                     </li>
-                    <li class="">
+                    <!--
+                    <li>
                         <a href="~/admin/start/qr.cshtml?qr=ra001" target="_blank">
                             <i class="fa fa-qrcode"></i>
-                            <span class="font-14">QR Code</span>
+                            <span class="font-14">
+                                QR Code
+                            </span>
                         </a>
                     </li>
-                    <!-- begin sidebar minify button -->
-                    <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
-                    <!-- end sidebar minify button -->
+                    -->
+                    <li>
+                        <a class="sidebar-minify-btn"
+                           href="javascript:;"
+                           data-click="sidebar-minify">
+                            <i class="fa fa-angle-double-left"></i>
+                        </a>
+                    </li>
                 </ul>
-                <!-- end sidebar nav -->
             </div>
-            <!-- end sidebar scrollbar -->
         </div>
         <div class="sidebar-bg"></div>
-        <!-- end #sidebar -->
-        <!-- begin #content -->
-        <div id="content" class="content">
-            <!-- begin page-header -->
-            <div v-show="contents.approve">@RenderPage("approve.cshtml")</div>
-            <div v-show="contents.report">@RenderPage("report.cshtml")</div>
-            <!-- end panel -->
+        <div id="content"
+             class="content">
+            <div v-show="contents.approve">
+                @RenderPage("approve.cshtml")
+            </div>
+            <div v-show="contents.report">
+                @RenderPage("report.cshtml")
+            </div>
         </div>
-        <!-- end #content -->
-        <!-- begin scroll to top btn -->
-        <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
-        <!-- end scroll to top btn -->
+        <a class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade"
+           href="javascript:void(0)"
+           data-click="scroll-top">
+            <i class="fa fa-angle-up"></i>
+        </a>
     </div>
-    <!-- end page container -->
-    <!-- ================== BEGIN BASE JS ================== -->
     <script src="~/admin/assets/plugins/jquery/jquery-3.3.1.min.js"></script>
     <script src="~/admin/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
     <script src="~/admin/assets/plugins/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
@@ -193,11 +322,13 @@
     <script src="~/Scripts/moment.min.js"></script>
     <script src="~/Scripts/jquery-qrcode-0.14.0.min.js"></script>
     <script src="~/Signalr/hubs"></script>
-    <!--[if lt IE 9]>
-        <script src="~/admin/assets/crossbrowserjs/html5shiv.js"></script>
-        <script src="~/admin/assets/crossbrowserjs/respond.min.js"></script>
-        <script src="~/admin/assets/crossbrowserjs/excanvas.min.js"></script>
-    <![endif]-->
+    <!--
+        [if lt IE 9]>
+            <script src="~/admin/assets/crossbrowserjs/html5shiv.js"></script>
+            <script src="~/admin/assets/crossbrowserjs/respond.min.js"></script>
+            <script src="~/admin/assets/crossbrowserjs/excanvas.min.js"></script>
+        <![endif]
+    -->
     <script src="~/admin/assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="~/admin/assets/plugins/js-cookie/js.cookie.js"></script>
     <script src="~/admin/assets/js/theme/default.min.js"></script>
@@ -206,10 +337,21 @@
     <link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="~/Scripts/jquery.dataTables.min.js" charset="utf8"></script>
     <script src="~/assets/plugins/paroller/jquery.paroller.min.js"></script>
-    <!-- ================== END BASE JS ================== -->
-
-    <script>$(() => { App.init() })</script>
+    <script>
+        $(() => {
+            App.init()
+        });
+    </script>
 </body>
 </html>
 <script src="~/connection.js"></script>
 <script src="~/admin/start/index.js"></script>
+<script type="text/javascript">
+    function doOnInit() {
+        jQuery.fn.dataTableExt.pager.numbers_length = 6;
+    }
+
+    window.onload = function () {
+        doOnInit();
+    };
+</script>
